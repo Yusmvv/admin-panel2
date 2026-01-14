@@ -641,9 +641,9 @@ const CONFIG = {
     <script>
         // ===================== КОНФИГУРАЦИЯ =====================
         const CONFIG = {
-            // Ключи localStorage
+            // Ключи localStorage (ИСПРАВЛЕНО для совместимости с лендингами)
             LOCAL_KEYS: {
-                OFFERS: 'admin_offers',
+                OFFERS: 'admin_offers', // Общий ключ для всех лендингов
                 SETTINGS: 'admin_settings',
                 BACKUP: 'admin_backup_',
                 API_KEY: 'admin_api_key'
@@ -653,7 +653,6 @@ const CONFIG = {
         // ===================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====================
         let offers = [];
         let settings = { 
-            // Используем тот же ключ, что и в лендингах для совместимости
             api_key: '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'
         };
         let currentEditOffer = null;
@@ -725,8 +724,14 @@ const CONFIG = {
                 
                 if (localOffers) {
                     const data = JSON.parse(localOffers);
-                    // Поддержка старого формата {offers: []} и нового []
-                    offers = Array.isArray(data) ? data : (data.offers || []);
+                    // Поддержка разных форматов
+                    if (Array.isArray(data)) {
+                        offers = data;
+                    } else if (data.offers) {
+                        offers = data.offers;
+                    } else if (data) {
+                        offers = data;
+                    }
                 }
                 
                 if (localSettings) {
@@ -752,16 +757,11 @@ const CONFIG = {
             }
         }
         
-        // Сохранение в localStorage
+        // Сохранение в localStorage (ИСПРАВЛЕНО для совместимости)
         function saveToLocalStorage() {
             try {
                 // Сохраняем в формате, который понимают лендинги
-                localStorage.setItem(CONFIG.LOCAL_KEYS.OFFERS, JSON.stringify({
-                    offers: offers,
-                    last_updated: new Date().toISOString(),
-                    version: '2.0',
-                    api_key: settings.api_key
-                }));
+                localStorage.setItem(CONFIG.LOCAL_KEYS.OFFERS, JSON.stringify(offers));
                 
                 localStorage.setItem(CONFIG.LOCAL_KEYS.SETTINGS, JSON.stringify(settings));
                 localStorage.setItem(CONFIG.LOCAL_KEYS.API_KEY, settings.api_key);
@@ -1243,8 +1243,8 @@ const CONFIG = {
                     rate_min: 0,
                     rate_max: 0.8,
                     approval: 96,
-                    link_landing1: 'https://mfo1.com/?ref=landing1',
-                    link_landing2: 'https://mfo1.com/?ref=landing2',
+                    link_landing1: '#',
+                    link_landing2: '#',
                     landing1: true,
                     landing2: true,
                     icon: 'bolt',
@@ -1265,8 +1265,8 @@ const CONFIG = {
                     rate_min: 0.5,
                     rate_max: 1,
                     approval: 94,
-                    link_landing1: 'https://mfo2.com/?ref=landing1',
-                    link_landing2: 'https://mfo2.com/?ref=landing2',
+                    link_landing1: '#',
+                    link_landing2: '#',
                     landing1: true,
                     landing2: true,
                     icon: 'shield-alt',
@@ -1287,8 +1287,8 @@ const CONFIG = {
                     rate_min: 0,
                     rate_max: 0.5,
                     approval: 92,
-                    link_landing1: 'https://mfo3.com/?ref=landing1',
-                    link_landing2: 'https://mfo3.com/?ref=landing2',
+                    link_landing1: '#',
+                    link_landing2: '#',
                     landing1: true,
                     landing2: true,
                     icon: 'star',
@@ -1309,8 +1309,8 @@ const CONFIG = {
                     rate_min: 0.8,
                     rate_max: 1.5,
                     approval: 98,
-                    link_landing1: 'https://mfo4.com/?ref=landing1',
-                    link_landing2: 'https://mfo4.com/?ref=landing2',
+                    link_landing1: '#',
+                    link_landing2: '#',
                     landing1: true,
                     landing2: false,
                     icon: 'rocket',
@@ -1322,7 +1322,6 @@ const CONFIG = {
                 }
             ];
             
-            // Используем тот же ключ, что и в лендингах
             if (!settings.api_key) {
                 settings.api_key = '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';
             }
@@ -1358,7 +1357,6 @@ const CONFIG = {
                     localStorage.clear();
                     offers = [];
                     settings = { 
-                        // Используем тот же ключ, что и в лендингах
                         api_key: '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'
                     };
                     document.getElementById('api-key').value = settings.api_key;
