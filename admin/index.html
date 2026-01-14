@@ -1,1 +1,819 @@
-
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель - Управление офферами</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Упрощённые стили */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc; 
+            margin: 0; 
+        }
+        
+        .sidebar {
+            background: #1e293b;
+            color: white;
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            padding: 20px 0;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            background: #e0e7ff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin: 4px;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div style="padding: 20px;">
+            <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 30px;">
+                <i class="fas fa-cogs"></i> Админ-панель
+            </h2>
+            
+            <div style="margin-bottom: 20px;">
+                <div id="sync-status" style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                    <div style="font-size: 12px; opacity: 0.8;">Статус синхронизации:</div>
+                    <div id="sync-text" style="font-weight: 600;">Загрузка...</div>
+                </div>
+                
+                <button id="sync-now-btn" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-sync-alt"></i> Синхронизировать
+                </button>
+            </div>
+            
+            <nav style="display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn" data-tab="offers" style="justify-content: flex-start; background: rgba(255,255,255,0.1); color: white;">
+                    <i class="fas fa-gem"></i> Офферы
+                </button>
+                <button class="btn" data-tab="settings" style="justify-content: flex-start; background: rgba(255,255,255,0.1); color: white;">
+                    <i class="fas fa-sliders-h"></i> Настройки
+                </button>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <!-- Секция офферов -->
+        <div id="offers-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h1 style="font-size: 24px; font-weight: 700;">Управление офферами</h1>
+                <button id="add-offer-btn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Добавить оффер
+                </button>
+            </div>
+            
+            <!-- Статистика -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div class="stat-card">
+                    <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Всего офферов</div>
+                    <div id="total-offers" style="font-size: 24px; font-weight: 700;">0</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Активных</div>
+                    <div id="active-offers" style="font-size: 24px; font-weight: 700;">0</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">На лендинге 1</div>
+                    <div id="landing1-count" style="font-size: 24px; font-weight: 700;">0</div>
+                </div>
+                <div class="stat-card">
+                    <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">На лендинге 2</div>
+                    <div id="landing2-count" style="font-size: 24px; font-weight: 700;">0</div>
+                </div>
+            </div>
+            
+            <!-- Таблица офферов -->
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Название</th>
+                            <th>Сумма</th>
+                            <th>Срок</th>
+                            <th>Ставка</th>
+                            <th>Статус</th>
+                            <th>Лендинги</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="offers-table-body">
+                        <!-- Офферы будут здесь -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Секция настроек -->
+        <div id="settings-section" style="display: none;">
+            <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 30px;">Настройки</h1>
+            
+            <div class="stat-card">
+                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Настройки лендингов</h3>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Заголовок лендинга 1</label>
+                    <input type="text" id="landing1-title" class="form-control" value="ДеньгиСразу - Получите займ даже если везде отказали">
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Заголовок лендинга 2</label>
+                    <input type="text" id="landing2-title" class="form-control" value="FinAI - Подберём займ, который точно одобрят">
+                </div>
+                
+                <button id="save-settings-btn" class="btn btn-success">
+                    <i class="fas fa-save"></i> Сохранить настройки
+                </button>
+            </div>
+            
+            <div class="stat-card" style="margin-top: 20px;">
+                <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px;">Экспорт/Импорт</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <button id="export-btn" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-download"></i> Экспорт данных
+                        </button>
+                    </div>
+                    <div>
+                        <button id="import-btn" class="btn" style="width: 100%; background: #e5e7eb;">
+                            <i class="fas fa-upload"></i> Импорт данных
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно оффера -->
+    <div id="offer-modal" class="modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="font-size: 20px; font-weight: 700;" id="modal-title">Новый оффер</h2>
+                <button id="close-modal" class="btn" style="background: #e5e7eb;">✕</button>
+            </div>
+            
+            <form id="offer-form">
+                <input type="hidden" id="offer-id">
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Название *</label>
+                        <input type="text" id="offer-name" class="form-control" required>
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Статус</label>
+                        <select id="offer-status" class="form-control">
+                            <option value="active">Активный</option>
+                            <option value="inactive">Неактивный</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Описание</label>
+                    <textarea id="offer-description" class="form-control" rows="2"></textarea>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Мин. сумма</label>
+                        <input type="number" id="amount-min" class="form-control" value="1000">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Макс. сумма</label>
+                        <input type="number" id="amount-max" class="form-control" value="50000">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Мин. срок</label>
+                        <input type="number" id="term-min" class="form-control" value="7">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Макс. срок</label>
+                        <input type="number" id="term-max" class="form-control" value="30">
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Ссылка лендинг 1</label>
+                        <input type="url" id="link-landing1" class="form-control" value="#">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Ссылка лендинг 2</label>
+                        <input type="url" id="link-landing2" class="form-control" value="#">
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Лендинги</label>
+                    <div style="display: flex; gap: 15px;">
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="landing1-check" checked> Лендинг 1
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="landing2-check" checked> Лендинг 2
+                        </label>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 15px; margin-top: 30px;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                    <button type="button" id="cancel-btn" class="btn" style="flex: 1; background: #e5e7eb;">
+                        Отмена
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Импорт файла -->
+    <input type="file" id="import-file" accept=".json" style="display: none;">
+    
+    <script>
+        // Конфигурация
+        const CONFIG = {
+            REPO_NAME: 'loan-admin-system',
+            DATA_FILES: {
+                OFFERS: 'https://raw.githubusercontent.com/username/loan-admin-system/main/data/offers.json',
+                SETTINGS: 'https://raw.githubusercontent.com/username/loan-admin-system/main/data/settings.json'
+            },
+            GITHUB_TOKEN: '' // Токен для записи
+        };
+        
+        // Глобальные переменные
+        let offers = [];
+        let settings = {};
+        let currentEditOffer = null;
+        let syncInProgress = false;
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            initUI();
+            loadData();
+            startAutoSync();
+        });
+        
+        // Инициализация интерфейса
+        function initUI() {
+            // Навигация
+            document.querySelectorAll('[data-tab]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tab = this.getAttribute('data-tab');
+                    
+                    // Скрываем все секции
+                    document.getElementById('offers-section').style.display = 'none';
+                    document.getElementById('settings-section').style.display = 'none';
+                    
+                    // Показываем выбранную
+                    document.getElementById(`${tab}-section`).style.display = 'block';
+                });
+            });
+            
+            // Кнопки
+            document.getElementById('add-offer-btn').addEventListener('click', () => showOfferModal());
+            document.getElementById('sync-now-btn').addEventListener('click', () => syncData());
+            document.getElementById('save-settings-btn').addEventListener('click', saveSettings);
+            document.getElementById('export-btn').addEventListener('click', exportData);
+            document.getElementById('import-btn').addEventListener('click', () => document.getElementById('import-file').click());
+            
+            // Модальное окно
+            document.getElementById('close-modal').addEventListener('click', closeModal);
+            document.getElementById('cancel-btn').addEventListener('click', closeModal);
+            document.getElementById('offer-form').addEventListener('submit', saveOffer);
+            
+            // Импорт файла
+            document.getElementById('import-file').addEventListener('change', importData);
+        }
+        
+        // Загрузка данных
+        async function loadData() {
+            updateSyncStatus('Загрузка данных...', 'info');
+            
+            try {
+                // Загружаем из GitHub
+                const [offersRes, settingsRes] = await Promise.all([
+                    fetch(CONFIG.DATA_FILES.OFFERS),
+                    fetch(CONFIG.DATA_FILES.SETTINGS)
+                ]);
+                
+                if (offersRes.ok && settingsRes.ok) {
+                    const offersData = await offersRes.json();
+                    const settingsData = await settingsRes.json();
+                    
+                    offers = offersData.offers || [];
+                    settings = settingsData;
+                    
+                    updateUI();
+                    updateSyncStatus('Данные загружены', 'success');
+                    
+                    // Обновляем поля настроек
+                    document.getElementById('landing1-title').value = settings.landing1_title || '';
+                    document.getElementById('landing2-title').value = settings.landing2_title || '';
+                    
+                } else {
+                    throw new Error('Ошибка загрузки данных');
+                }
+                
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+                updateSyncStatus('Ошибка загрузки', 'error');
+                
+                // Загружаем локальные данные
+                const localData = localStorage.getItem('offers_backup');
+                if (localData) {
+                    offers = JSON.parse(localData);
+                    updateUI();
+                    updateSyncStatus('Используются локальные данные', 'warning');
+                }
+            }
+        }
+        
+        // Синхронизация данных
+        async function syncData() {
+            if (syncInProgress) return;
+            
+            syncInProgress = true;
+            updateSyncStatus('Синхронизация...', 'info');
+            
+            try {
+                // Здесь будет логика отправки данных на GitHub
+                await saveToGitHub();
+                
+                updateSyncStatus('Синхронизировано', 'success');
+                
+                // Обновляем лендинги
+                await updateLandings();
+                
+            } catch (error) {
+                console.error('Ошибка синхронизации:', error);
+                updateSyncStatus('Ошибка синхронизации', 'error');
+            } finally {
+                syncInProgress = false;
+            }
+        }
+        
+        // Автоматическая синхронизация
+        function startAutoSync() {
+            // Синхронизация каждые 5 минут
+            setInterval(() => {
+                if (!syncInProgress) {
+                    syncData();
+                }
+            }, 5 * 60 * 1000);
+            
+            // Синхронизация при фокусе
+            window.addEventListener('focus', () => {
+                if (!syncInProgress) {
+                    syncData();
+                }
+            });
+        }
+        
+        // Обновление статуса синхронизации
+        function updateSyncStatus(text, type = 'info') {
+            const syncText = document.getElementById('sync-text');
+            const syncStatus = document.getElementById('sync-status');
+            
+            syncText.textContent = text;
+            
+            // Цвета для разных статусов
+            const colors = {
+                info: 'rgba(59, 130, 246, 0.2)',
+                success: 'rgba(16, 185, 129, 0.2)',
+                error: 'rgba(239, 68, 68, 0.2)',
+                warning: 'rgba(245, 158, 11, 0.2)'
+            };
+            
+            syncStatus.style.background = colors[type] || colors.info;
+        }
+        
+        // Обновление интерфейса
+        function updateUI() {
+            // Статистика
+            const totalOffers = offers.length;
+            const activeOffers = offers.filter(o => o.status === 'active').length;
+            const landing1Offers = offers.filter(o => o.landing1 && o.status === 'active').length;
+            const landing2Offers = offers.filter(o => o.landing2 && o.status === 'active').length;
+            
+            document.getElementById('total-offers').textContent = totalOffers;
+            document.getElementById('active-offers').textContent = activeOffers;
+            document.getElementById('landing1-count').textContent = landing1Offers;
+            document.getElementById('landing2-count').textContent = landing2Offers;
+            
+            // Таблица
+            const tbody = document.getElementById('offers-table-body');
+            tbody.innerHTML = '';
+            
+            if (offers.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #64748b;">
+                            <i class="fas fa-inbox" style="font-size: 24px; margin-bottom: 10px; display: block;"></i>
+                            <div>Нет офферов</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            offers.forEach(offer => {
+                const tr = document.createElement('tr');
+                
+                tr.innerHTML = `
+                    <td>
+                        <div style="font-weight: 600;">${offer.name}</div>
+                        <div style="font-size: 12px; color: #64748b;">${offer.description || ''}</div>
+                    </td>
+                    <td>${formatNumber(offer.amount_min)} - ${formatNumber(offer.amount_max)} ₽</td>
+                    <td>${offer.term_min} - ${offer.term_max} дней</td>
+                    <td>${offer.rate_min} - ${offer.rate_max}%</td>
+                    <td>
+                        <span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; 
+                              background: ${offer.status === 'active' ? '#d1fae5' : '#f3f4f6'}; 
+                              color: ${offer.status === 'active' ? '#065f46' : '#6b7280'};">
+                            ${offer.status === 'active' ? 'Активный' : 'Неактивный'}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            ${offer.landing1 ? '<span style="background: #dbeafe; color: #1e40af; padding: 2px 8px; border-radius: 4px; font-size: 12px;">Л1</span>' : ''}
+                            ${offer.landing2 ? '<span style="background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 4px; font-size: 12px;">Л2</span>' : ''}
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="editOffer('${offer.id}')" class="btn" style="padding: 4px 8px; font-size: 12px;">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteOffer('${offer.id}')" class="btn" style="padding: 4px 8px; font-size: 12px; background: #fee2e2; color: #dc2626;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+        }
+        
+        // Форматирование чисел
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+        
+        // Модальное окно оффера
+        function showOfferModal(offer = null) {
+            currentEditOffer = offer;
+            const modal = document.getElementById('offer-modal');
+            const title = document.getElementById('modal-title');
+            
+            if (offer) {
+                title.textContent = 'Редактировать оффер';
+                populateForm(offer);
+            } else {
+                title.textContent = 'Новый оффер';
+                resetForm();
+            }
+            
+            modal.classList.add('active');
+        }
+        
+        function populateForm(offer) {
+            document.getElementById('offer-id').value = offer.id;
+            document.getElementById('offer-name').value = offer.name;
+            document.getElementById('offer-description').value = offer.description || '';
+            document.getElementById('offer-status').value = offer.status || 'active';
+            document.getElementById('amount-min').value = offer.amount_min || 1000;
+            document.getElementById('amount-max').value = offer.amount_max || 50000;
+            document.getElementById('term-min').value = offer.term_min || 7;
+            document.getElementById('term-max').value = offer.term_max || 30;
+            document.getElementById('link-landing1').value = offer.link_landing1 || '#';
+            document.getElementById('link-landing2').value = offer.link_landing2 || '#';
+            document.getElementById('landing1-check').checked = offer.landing1 || false;
+            document.getElementById('landing2-check').checked = offer.landing2 || false;
+        }
+        
+        function resetForm() {
+            document.getElementById('offer-form').reset();
+            document.getElementById('offer-id').value = '';
+            document.getElementById('offer-status').value = 'active';
+            document.getElementById('amount-min').value = 1000;
+            document.getElementById('amount-max').value = 50000;
+            document.getElementById('term-min').value = 7;
+            document.getElementById('term-max').value = 30;
+            document.getElementById('link-landing1').value = '#';
+            document.getElementById('link-landing2').value = '#';
+            document.getElementById('landing1-check').checked = true;
+            document.getElementById('landing2-check').checked = true;
+        }
+        
+        function closeModal() {
+            document.getElementById('offer-modal').classList.remove('active');
+            currentEditOffer = null;
+        }
+        
+        // Сохранение оффера
+        function saveOffer(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('offer-id').value;
+            const name = document.getElementById('offer-name').value.trim();
+            
+            if (!name) {
+                alert('Введите название оффера');
+                return;
+            }
+            
+            const offerData = {
+                id: id || Date.now().toString(),
+                name: name,
+                description: document.getElementById('offer-description').value.trim(),
+                status: document.getElementById('offer-status').value,
+                amount_min: parseInt(document.getElementById('amount-min').value),
+                amount_max: parseInt(document.getElementById('amount-max').value),
+                term_min: parseInt(document.getElementById('term-min').value),
+                term_max: parseInt(document.getElementById('term-max').value),
+                rate_min: 0,
+                rate_max: 0.8,
+                rate_display: "0 - 0.8% в день",
+                link_landing1: document.getElementById('link-landing1').value.trim(),
+                link_landing2: document.getElementById('link-landing2').value.trim(),
+                landing1: document.getElementById('landing1-check').checked,
+                landing2: document.getElementById('landing2-check').checked,
+                updated_at: new Date().toISOString(),
+                created_at: id ? offers.find(o => o.id === id)?.created_at || new Date().toISOString() : new Date().toISOString()
+            };
+            
+            if (id) {
+                // Редактирование
+                const index = offers.findIndex(o => o.id === id);
+                if (index !== -1) {
+                    offers[index] = offerData;
+                }
+            } else {
+                // Добавление
+                offers.push(offerData);
+            }
+            
+            updateUI();
+            saveToLocalStorage();
+            closeModal();
+            
+            // Автосинхронизация
+            setTimeout(() => syncData(), 1000);
+            
+            showNotification('Оффер сохранен');
+        }
+        
+        // Редактирование оффера
+        window.editOffer = function(id) {
+            const offer = offers.find(o => o.id === id);
+            if (offer) {
+                showOfferModal(offer);
+            }
+        };
+        
+        // Удаление оффера
+        window.deleteOffer = function(id) {
+            Swal.fire({
+                title: 'Удалить оффер?',
+                text: 'Это действие нельзя отменить',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Да, удалить',
+                cancelButtonText: 'Отмена'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    offers = offers.filter(o => o.id !== id);
+                    updateUI();
+                    saveToLocalStorage();
+                    syncData();
+                    showNotification('Оффер удален');
+                }
+            });
+        };
+        
+        // Сохранение настроек
+        function saveSettings() {
+            settings.landing1_title = document.getElementById('landing1-title').value;
+            settings.landing2_title = document.getElementById('landing2-title').value;
+            
+            saveToLocalStorage();
+            syncData();
+            showNotification('Настройки сохранены');
+        }
+        
+        // Экспорт данных
+        function exportData() {
+            const data = {
+                offers: offers,
+                settings: settings,
+                exported_at: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `offers-backup-${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Импорт данных
+        function importData(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    Swal.fire({
+                        title: 'Импортировать данные?',
+                        text: `Будет импортировано ${data.offers?.length || 0} офферов`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Да, импортировать',
+                        cancelButtonText: 'Отмена'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            if (data.offers) offers = data.offers;
+                            if (data.settings) settings = data.settings;
+                            
+                            updateUI();
+                            saveToLocalStorage();
+                            syncData();
+                            showNotification('Данные импортированы');
+                        }
+                    });
+                } catch (error) {
+                    showNotification('Ошибка чтения файла', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        // Сохранение в localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('offers_backup', JSON.stringify(offers));
+            localStorage.setItem('settings_backup', JSON.stringify(settings));
+        }
+        
+        // Сохранение на GitHub
+        async function saveToGitHub() {
+            // В реальном проекте здесь будет запрос к GitHub API
+            // Для демо просто сохраняем локально
+            console.log('Сохранение данных...');
+            
+            // Имитация задержки
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            return true;
+        }
+        
+        // Обновление лендингов
+        async function updateLandings() {
+            console.log('Обновление лендингов...');
+            // Здесь будет логика обновления лендингов
+        }
+        
+        // Уведомления
+        function showNotification(message, type = 'success') {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                icon: type,
+                title: message
+            });
+        }
+    </script>
+</body>
+</html>
