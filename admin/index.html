@@ -347,22 +347,22 @@
                 <div class="mt-8">
                     <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 15px;">Инструкция для лендингов:</h3>
                     <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
-                        <p style="margin-bottom: 10px;">1. Откройте файлы лендингов:</p>
-                        <ul style="list-style: disc; padding-left: 20px; margin-bottom: 15px;">
-                            <li><code>landing1/index.html</code></li>
-                            <li><code>landing2/index.html</code></li>
-                        </ul>
-                        
-                        <p style="margin-bottom: 10px;">2. Найдите строку с API ключом:</p>
+                        <p style="margin-bottom: 10px;">1. Откройте файлы лендингов и найдите строку с API ключом:</p>
                         <pre style="background: #1e293b; color: #f1f5f9; padding: 10px; border-radius: 6px; overflow-x: auto; margin-bottom: 15px;">
 const CONFIG = {
-    API_KEY: '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', // 
+    // API ключ из админ-панели
+    API_KEY: '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',
     // ...
 };</pre>
                         
-                        <p style="margin-bottom: 10px;">3. Замените <code>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</code> на ключ выше</p>
+                        <p style="margin-bottom: 10px;">2. Замените <code>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</code> на ваш ключ</p>
                         
-                        <p style="margin-bottom: 10px;">4. Сохраните файлы и обновите лендинги</p>
+                        <p style="margin-bottom: 10px;">3. Сохраните файлы и обновите лендинги</p>
+                        
+                        <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
+                            <div class="font-semibold text-blue-800">Важно:</div>
+                            <div class="text-sm text-blue-700">В текущей версии лендинги загружают данные напрямую из localStorage браузера. API ключ нужен для будущих версий.</div>
+                        </div>
                     </div>
                 </div>
                 
@@ -380,7 +380,8 @@ const CONFIG = {
                                 </div>
                             </div>
                             <div class="text-sm text-gray-600 mb-2">URL:</div>
-                            <code class="text-xs bg-gray-100 p-2 rounded block">/landing1/</code>
+                            <code class="text-xs bg-gray-100 p-2 rounded block">landing1/index.html</code>
+                            <div class="text-xs text-gray-500 mt-1">Использует LANDING_NUMBER: 1</div>
                         </div>
                         
                         <div class="stat-card">
@@ -394,9 +395,21 @@ const CONFIG = {
                                 </div>
                             </div>
                             <div class="text-sm text-gray-600 mb-2">URL:</div>
-                            <code class="text-xs bg-gray-100 p-2 rounded block">/landing2/</code>
+                            <code class="text-xs bg-gray-100 p-2 rounded block">landing2/index.html</code>
+                            <div class="text-xs text-gray-500 mt-1">Использует LANDING_NUMBER: 2</div>
                         </div>
                     </div>
+                </div>
+                
+                <div class="mt-8 pt-8 border-t border-gray-200">
+                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 15px;">Как это работает</h3>
+                    <ol class="list-decimal pl-5 space-y-2 text-gray-700">
+                        <li>Создаете офферы в админ-панели</li>
+                        <li>Для каждого оффера указываете на каких лендингах он будет отображаться</li>
+                        <li>Данные сохраняются в localStorage браузера</li>
+                        <li>Лендинги загружают офферы из localStorage с помощью API ключа</li>
+                        <li>Каждый лендинг видит только свои офферы (по полям landing1, landing2)</li>
+                    </ol>
                 </div>
             </div>
         </div>
@@ -436,6 +449,24 @@ const CONFIG = {
                     <button id="reset-all" class="btn btn-danger">
                         <i class="fas fa-bomb"></i> Сбросить всё
                     </button>
+                </div>
+            </div>
+            
+            <div class="stat-card" style="margin-top: 30px;">
+                <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 20px;">Текущие настройки</h2>
+                <div style="background: #f8fafc; border-radius: 8px; padding: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>API ключ:</span>
+                        <code id="current-api-key" class="text-xs bg-gray-200 px-2 py-1 rounded"></code>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>Офферов в localStorage:</span>
+                        <span id="localstorage-count">0</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Размер localStorage:</span>
+                        <span id="localstorage-size">0 КБ</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -622,7 +653,8 @@ const CONFIG = {
         // ===================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====================
         let offers = [];
         let settings = { 
-            api_key: 'loan_system_' + Math.random().toString(36).substr(2, 9)
+            // Используем тот же ключ, что и в лендингах для совместимости
+            api_key: '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'
         };
         let currentEditOffer = null;
         let syncInProgress = false;
@@ -639,6 +671,9 @@ const CONFIG = {
             
             // Обновление интерфейса
             updateUI();
+            
+            // Обновляем статистику localStorage
+            updateLocalStorageInfo();
             
             console.log('Админ-панель: Готово');
         });
@@ -690,7 +725,8 @@ const CONFIG = {
                 
                 if (localOffers) {
                     const data = JSON.parse(localOffers);
-                    offers = data.offers || data;
+                    // Поддержка старого формата {offers: []} и нового []
+                    offers = Array.isArray(data) ? data : (data.offers || []);
                 }
                 
                 if (localSettings) {
@@ -701,10 +737,10 @@ const CONFIG = {
                     settings.api_key = localApiKey;
                 }
                 
-                updateSyncStatus('Данные загружены', 'success');
-                
                 // Обновляем поле API ключа
                 document.getElementById('api-key').value = settings.api_key || 'ВАШ_API_КЛЮЧ';
+                
+                updateSyncStatus('Данные загружены', 'success');
                 
             } catch (error) {
                 console.error('Ошибка загрузки:', error);
@@ -719,10 +755,12 @@ const CONFIG = {
         // Сохранение в localStorage
         function saveToLocalStorage() {
             try {
+                // Сохраняем в формате, который понимают лендинги
                 localStorage.setItem(CONFIG.LOCAL_KEYS.OFFERS, JSON.stringify({
                     offers: offers,
                     last_updated: new Date().toISOString(),
-                    version: '2.0'
+                    version: '2.0',
+                    api_key: settings.api_key
                 }));
                 
                 localStorage.setItem(CONFIG.LOCAL_KEYS.SETTINGS, JSON.stringify(settings));
@@ -734,6 +772,9 @@ const CONFIG = {
                     CONFIG.LOCAL_KEYS.BACKUP + timestamp,
                     JSON.stringify({ offers, settings, timestamp })
                 );
+                
+                // Обновляем статистику
+                updateLocalStorageInfo();
                 
                 return true;
             } catch (error) {
@@ -750,12 +791,20 @@ const CONFIG = {
             }
             
             syncInProgress = true;
-            updateSyncStatus('Сохранение локальных данных...', 'loading');
+            updateSyncStatus('Сохранение данных...', 'loading');
             
             try {
-                saveToLocalStorage();
-                updateSyncStatus('Данные сохранены локально', 'success');
-                showNotification('Данные сохранены', 'success');
+                const success = saveToLocalStorage();
+                
+                if (success) {
+                    updateSyncStatus('Данные сохранены в localStorage', 'success');
+                    showNotification('Данные сохранены', 'success');
+                    
+                    // Обновляем информацию о localStorage
+                    updateLocalStorageInfo();
+                } else {
+                    throw new Error('Ошибка сохранения');
+                }
                 
             } catch (error) {
                 console.error('Ошибка синхронизации:', error);
@@ -850,6 +899,36 @@ const CONFIG = {
             });
         }
         
+        function updateLocalStorageInfo() {
+            try {
+                // Текущий API ключ
+                document.getElementById('current-api-key').textContent = 
+                    settings.api_key ? settings.api_key.substring(0, 20) + '...' : 'нет';
+                
+                // Количество офферов в localStorage
+                const storedData = localStorage.getItem(CONFIG.LOCAL_KEYS.OFFERS);
+                let offerCount = 0;
+                if (storedData) {
+                    const data = JSON.parse(storedData);
+                    offerCount = Array.isArray(data) ? data.length : (data.offers?.length || 0);
+                }
+                document.getElementById('localstorage-count').textContent = offerCount;
+                
+                // Размер localStorage
+                let totalSize = 0;
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key.startsWith('admin_')) {
+                        totalSize += (localStorage.getItem(key).length * 2) / 1024; // в КБ
+                    }
+                }
+                document.getElementById('localstorage-size').textContent = totalSize.toFixed(2) + ' КБ';
+                
+            } catch (error) {
+                console.error('Ошибка обновления информации:', error);
+            }
+        }
+        
         // Форматирование чисел
         function formatNumber(num) {
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
@@ -887,8 +966,8 @@ const CONFIG = {
             document.getElementById('link-landing1').value = offer.link_landing1 || '#';
             document.getElementById('link-landing2').value = offer.link_landing2 || '#';
             document.getElementById('offer-icon').value = offer.icon || 'bolt';
-            document.getElementById('landing1-check').checked = offer.landing1 || false;
-            document.getElementById('landing2-check').checked = offer.landing2 || false;
+            document.getElementById('landing1-check').checked = offer.landing1 !== false;
+            document.getElementById('landing2-check').checked = offer.landing2 !== false;
             
             // Типы дохода
             const incomeTypes = offer.incomeTypes || [];
@@ -975,7 +1054,6 @@ const CONFIG = {
                 term_max: parseInt(document.getElementById('term-max').value) || 30,
                 rate_min: parseFloat(document.getElementById('rate-min').value) || 0,
                 rate_max: parseFloat(document.getElementById('rate-max').value) || 0.8,
-                rate_display: `${parseFloat(document.getElementById('rate-min').value) || 0} - ${parseFloat(document.getElementById('rate-max').value) || 0.8}% в день`,
                 approval: parseInt(document.getElementById('approval').value) || 95,
                 link_landing1: document.getElementById('link-landing1').value.trim(),
                 link_landing2: document.getElementById('link-landing2').value.trim(),
@@ -999,14 +1077,14 @@ const CONFIG = {
                 offers.push(offerData);
             }
             
-            saveToLocalStorage();
-            updateUI();
-            closeModal();
-            
-            // Автосинхронизация
-            setTimeout(() => syncWithBackend(), 1000);
-            
-            showNotification('Оффер сохранен', 'success');
+            const success = saveToLocalStorage();
+            if (success) {
+                updateUI();
+                closeModal();
+                showNotification('Оффер сохранен', 'success');
+            } else {
+                showNotification('Ошибка сохранения', 'error');
+            }
         }
         
         // Глобальные функции для таблицы
@@ -1028,10 +1106,11 @@ const CONFIG = {
             }).then((result) => {
                 if (result.isConfirmed) {
                     offers = offers.filter(o => o.id !== id);
-                    saveToLocalStorage();
-                    updateUI();
-                    syncWithBackend();
-                    showNotification('Оффер удален', 'success');
+                    const success = saveToLocalStorage();
+                    if (success) {
+                        updateUI();
+                        showNotification('Оффер удален', 'success');
+                    }
                 }
             });
         };
@@ -1057,8 +1136,11 @@ const CONFIG = {
                     const newKey = 'loan_system_' + Math.random().toString(36).substr(2, 12);
                     settings.api_key = newKey;
                     document.getElementById('api-key').value = newKey;
-                    saveToLocalStorage();
-                    showNotification('Новый API ключ сгенерирован', 'success');
+                    const success = saveToLocalStorage();
+                    if (success) {
+                        showNotification('Новый API ключ сгенерирован', 'success');
+                        updateLocalStorageInfo();
+                    }
                 }
             });
         }
@@ -1111,14 +1193,17 @@ const CONFIG = {
                             if (data.settings) settings = data.settings;
                             if (data.api_key) settings.api_key = data.api_key;
                             
-                            saveToLocalStorage();
-                            updateUI();
-                            syncWithBackend();
-                            showNotification('Данные импортированы', 'success');
+                            const success = saveToLocalStorage();
+                            if (success) {
+                                updateUI();
+                                updateLocalStorageInfo();
+                                document.getElementById('api-key').value = settings.api_key;
+                                showNotification('Данные импортированы', 'success');
+                            }
                         }
                     });
                 } catch (error) {
-                    showNotification('Ошибка чтения файла', 'error');
+                    showNotification('Ошибка чтения файла: ' + error.message, 'error');
                 }
             };
             reader.readAsText(file);
@@ -1157,10 +1242,9 @@ const CONFIG = {
                     term_max: 30,
                     rate_min: 0,
                     rate_max: 0.8,
-                    rate_display: '0 - 0.8% в день',
                     approval: 96,
-                    link_landing1: '#',
-                    link_landing2: '#',
+                    link_landing1: 'https://mfo1.com/?ref=landing1',
+                    link_landing2: 'https://mfo1.com/?ref=landing2',
                     landing1: true,
                     landing2: true,
                     icon: 'bolt',
@@ -1180,10 +1264,9 @@ const CONFIG = {
                     term_max: 60,
                     rate_min: 0.5,
                     rate_max: 1,
-                    rate_display: '0.5 - 1% в день',
                     approval: 94,
-                    link_landing1: '#',
-                    link_landing2: '#',
+                    link_landing1: 'https://mfo2.com/?ref=landing1',
+                    link_landing2: 'https://mfo2.com/?ref=landing2',
                     landing1: true,
                     landing2: true,
                     icon: 'shield-alt',
@@ -1203,10 +1286,9 @@ const CONFIG = {
                     term_max: 90,
                     rate_min: 0,
                     rate_max: 0.5,
-                    rate_display: '0 - 0.5% в день',
                     approval: 92,
-                    link_landing1: '#',
-                    link_landing2: '#',
+                    link_landing1: 'https://mfo3.com/?ref=landing1',
+                    link_landing2: 'https://mfo3.com/?ref=landing2',
                     landing1: true,
                     landing2: true,
                     icon: 'star',
@@ -1226,10 +1308,9 @@ const CONFIG = {
                     term_max: 20,
                     rate_min: 0.8,
                     rate_max: 1.5,
-                    rate_display: '0.8 - 1.5% в день',
                     approval: 98,
-                    link_landing1: '#',
-                    link_landing2: '#',
+                    link_landing1: 'https://mfo4.com/?ref=landing1',
+                    link_landing2: 'https://mfo4.com/?ref=landing2',
                     landing1: true,
                     landing2: false,
                     icon: 'rocket',
@@ -1241,14 +1322,18 @@ const CONFIG = {
                 }
             ];
             
-            // Генерируем API ключ если нет
+            // Используем тот же ключ, что и в лендингах
             if (!settings.api_key) {
-                settings.api_key = 'loan_system_' + Math.random().toString(36).substr(2, 9);
+                settings.api_key = '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';
             }
             
-            saveToLocalStorage();
-            updateUI();
-            showNotification('Демо-данные загружены', 'success');
+            const success = saveToLocalStorage();
+            if (success) {
+                updateUI();
+                updateLocalStorageInfo();
+                document.getElementById('api-key').value = settings.api_key;
+                showNotification('Демо-данные загружены', 'success');
+            }
         }
         
         function resetAllData() {
@@ -1273,11 +1358,16 @@ const CONFIG = {
                     localStorage.clear();
                     offers = [];
                     settings = { 
-                        api_key: 'loan_system_' + Math.random().toString(36).substr(2, 9)
+                        // Используем тот же ключ, что и в лендингах
+                        api_key: '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'
                     };
                     document.getElementById('api-key').value = settings.api_key;
-                    updateUI();
-                    showNotification('Все данные сброшены', 'success');
+                    const success = saveToLocalStorage();
+                    if (success) {
+                        updateUI();
+                        updateLocalStorageInfo();
+                        showNotification('Все данные сброшены', 'success');
+                    }
                 }
             });
         }
@@ -1297,6 +1387,11 @@ const CONFIG = {
                 btn.style.background = 'rgba(255,255,255,0.1)';
             });
             document.querySelector(`[data-section="${section}"]`).style.background = 'rgba(255,255,255,0.2)';
+            
+            // Если показываем секцию бэкапа, обновляем информацию
+            if (section === 'backup') {
+                updateLocalStorageInfo();
+            }
         }
         
         function updateSyncStatus(message, type) {
