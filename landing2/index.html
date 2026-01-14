@@ -1675,7 +1675,7 @@
                     <div class="mt-6 pt-6 border-t border-gray-200">
                         <div class="admin-data-notice mb-3">
                             <i class="fas fa-database mr-2"></i>
-                            Данные загружаются из админ-панели
+                            Данные загружаются из админ 0px; border-radius: 12px; padding: 12px 16px; margin: 16px 0; text-align: center; font-size: 13px; color: #065f46;">
                         </div>
                         <p class="text-xs text-gray-500">
                             Мы подобрали лучшие варианты на основе ваших ответов. Если не нашли подходящий вариант, попробуйте изменить параметры поиска.
@@ -1724,21 +1724,18 @@
 
     <script>
         // ===================== КОНФИГУРАЦИЯ =====================
-       const CONFIG = {
-    // API ключ из админ-панели
-    // ЗАМЕНИТЕ ЭТОТ КЛЮЧ НА КЛЮЧ ИЗ ВАШЕЙ АДМИН-ПАНЕЛИ
-    API_KEY: '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',
-    
-    // Лендинг 2 (FinAI)
-    LANDING_NUMBER: 2,
-    
-    // Ключи localStorage
-    LOCAL_KEYS: {
-        OFFERS: 'landing2_offers_cache',
-        LAST_SYNC: 'landing2_last_sync',
-        CACHE_TTL: 5 * 60 * 1000 // 5 минут кэширования
-    }
-};
+        const CONFIG = {
+            // API ключ из админ-панели
+            API_KEY: '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',
+            
+            // Лендинг 2 (ДеньгиСразу)
+            LANDING_NUMBER: 2,
+            
+            // Ключ localStorage для общего доступа (ИСПРАВЛЕНО)
+            LOCAL_KEYS: {
+                OFFERS: 'admin_offers' // Общий ключ с админкой
+            }
+        };
 
         // ===================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====================
         let offersData = []; // Все офферы из админки для этого лендинга
@@ -1755,7 +1752,7 @@
 
         // ===================== ИНИЦИАЛИЗАЦИЯ =====================
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('Лендинг 1: Инициализация...');
+            console.log('ДеньгиСразу: Инициализация лендинга 2...');
             
             // Загружаем офферы из админки
             await loadOffersFromAdmin();
@@ -1763,44 +1760,35 @@
             // Инициализация UI
             initUI();
             
-            console.log(`Лендинг 1: Загружено ${offersData.length} офферов из админки`);
+            console.log(`ДеньгиСразу: Загружено ${offersData.length} офферов из админки`);
         });
 
         // ===================== ЗАГРУЗКА ОФФЕРОВ ИЗ АДМИНКИ =====================
         async function loadOffersFromAdmin() {
             try {
-                // Проверяем кэш
-                const cachedData = getCachedOffers();
-                if (cachedData) {
-                    offersData = cachedData;
-                    allAdminOffers = offersData;
-                    console.log('Используем кэшированные офферы:', offersData.length);
-                    return true;
-                }
-                
-                // Загружаем из localStorage админки
-                const adminData = localStorage.getItem('admin_offers');
+                // Загружаем из localStorage админки (ИСПРАВЛЕНО ключ)
+                const adminData = localStorage.getItem(CONFIG.LOCAL_KEYS.OFFERS);
                 
                 if (adminData) {
                     const data = JSON.parse(adminData);
-                    allAdminOffers = data.offers || data || [];
+                    // data может быть массивом или объектом с массивом offers
+                    allAdminOffers = Array.isArray(data) ? data : (data.offers || data || []);
                     
-                    // Фильтруем только активные офферы для лендинга 1
+                    // Фильтруем только активные офферы для лендинга 2
                     offersData = allAdminOffers.filter(offer => 
                         offer.status === 'active' && 
-                        offer.landing1 === true
+                        offer.landing2 === true
                     );
                     
-                    console.log('Загружено из админки:', offersData.length);
+                    console.log('Загружено из админки для лендинга 2:', offersData.length);
+                    updateConnectionStatus(true);
                 } else {
                     // Если в админке нет данных, используем демо
                     offersData = getDemoOffers();
                     allAdminOffers = offersData;
                     console.log('Используем демо-данные:', offersData.length);
+                    updateConnectionStatus(false);
                 }
-                
-                // Кэшируем
-                cacheOffers(offersData);
                 
                 return true;
                 
@@ -1808,37 +1796,8 @@
                 console.error('Ошибка загрузки офферов:', error);
                 offersData = getDemoOffers();
                 allAdminOffers = offersData;
+                updateConnectionStatus(false);
                 return false;
-            }
-        }
-
-        // ===================== КЭШИРОВАНИЕ =====================
-        function getCachedOffers() {
-            try {
-                const cache = localStorage.getItem(CONFIG.LOCAL_KEYS.OFFERS_CACHE);
-                const lastSync = localStorage.getItem(CONFIG.LOCAL_KEYS.LAST_SYNC);
-                
-                if (!cache || !lastSync) return null;
-                
-                const cacheAge = Date.now() - parseInt(lastSync);
-                if (cacheAge > CONFIG.LOCAL_KEYS.CACHE_TTL) {
-                    localStorage.removeItem(CONFIG.LOCAL_KEYS.OFFERS_CACHE);
-                    localStorage.removeItem(CONFIG.LOCAL_KEYS.LAST_SYNC);
-                    return null;
-                }
-                
-                return JSON.parse(cache);
-            } catch (error) {
-                return null;
-            }
-        }
-
-        function cacheOffers(offers) {
-            try {
-                localStorage.setItem(CONFIG.LOCAL_KEYS.OFFERS_CACHE, JSON.stringify(offers));
-                localStorage.setItem(CONFIG.LOCAL_KEYS.LAST_SYNC, Date.now().toString());
-            } catch (error) {
-                console.error('Ошибка кэширования:', error);
             }
         }
 
@@ -2193,14 +2152,18 @@
 
         function filterOffers() {
             return offersData.filter(offer => {
-                // Проверяем типы кредитной истории
-                if (state.overdue && offer.historyTypes && !offer.historyTypes.includes(state.overdue)) {
-                    return false;
+                // Проверяем типы кредитной истории (ИСПРАВЛЕНО: проверяем наличие historyTypes)
+                if (state.overdue && offer.historyTypes && offer.historyTypes.length > 0) {
+                    if (!offer.historyTypes.includes(state.overdue)) {
+                        return false;
+                    }
                 }
                 
                 // Проверяем типы дохода
-                if (state.income && offer.incomeTypes && !offer.incomeTypes.includes(state.income)) {
-                    return false;
+                if (state.income && offer.incomeTypes && offer.incomeTypes.length > 0) {
+                    if (!offer.incomeTypes.includes(state.income)) {
+                        return false;
+                    }
                 }
                 
                 // Проверяем сумму
@@ -2274,8 +2237,8 @@
                 const card = document.createElement('div');
                 card.className = 'offer-card fade-in';
                 
-                // Определяем ссылку для лендинга 1
-                const link = offer.link_landing1 || '#';
+                // Определяем ссылку для лендинга 2
+                const link = offer.link_landing2 || '#';
                 
                 // Генерируем теги условий
                 const features = generateFeatures(offer);
