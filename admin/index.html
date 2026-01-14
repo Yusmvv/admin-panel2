@@ -527,23 +527,36 @@
     <script>
         // ===================== КОНФИГУРАЦИЯ =====================
         const CONFIG = {
-            // GitHub репозиторий
-            GITHUB_USERNAME: 'YOUR_USERNAME',
-            REPO_NAME: 'loan-admin-system',
-            BRANCH: 'main',
-            
-            // Файлы данных (используем raw ссылки)
-            DATA_FILES: {
-                OFFERS: 'https://raw.githubusercontent.com/YOUR_USERNAME/loan-admin-system/main/data/offers.json',
-                SETTINGS: 'https://raw.githubusercontent.com/YOUR_USERNAME/loan-admin-system/main/data/settings.json'
-            },
-            
-            // Ключи localStorage
-            LOCAL_KEYS: {
-                OFFERS: 'admin_offers',
-                BACKUP: 'admin_backup_'
-            }
-        };
+ 
+    GITHUB_USERNAME: 'Yusmvv', // 
+    REPO_NAME: 'loan-admin-system',
+    BRANCH: 'main',
+    
+    // GitHub Personal Access Token
+    GITHUB_TOKEN: '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', 
+    
+    // Файлы данных
+    DATA_FILES: {
+        OFFERS: 'https://api.github.com/repos/YOUR_USERNAME/loan-admin-system/contents/data/offers.json',
+        SETTINGS: 'https://api.github.com/repos/YOUR_USERNAME/loan-admin-system/contents/data/settings.json'
+    },
+    
+    // Ключи localStorage
+    LOCAL_KEYS: {
+        OFFERS: 'admin_offers',
+        SETTINGS: 'admin_settings',
+        BACKUP: 'admin_backup_'
+    },
+    
+    // Настройки по умолчанию
+    DEFAULT_SETTINGS: {
+        landing1_title: 'ДеньгиСразу - Получите займ даже если везде отказали',
+        landing2_title: 'FinAI - Подберём займ, который точно одобрят',
+        primary_color: '#3b82f6',
+        overdue_types: ['Нет просрочек', 'Есть просрочки', 'Просрочки более 30 дней', 'Судебные дела'],
+        income_types: ['Есть доход', 'Нет дохода', 'Доход не подтвержден']
+    }
+};
         
         // ===================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====================
         let offers = [];
