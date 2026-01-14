@@ -635,6 +635,18 @@
         .history-icon {
             color: #6366f1;
         }
+        
+        /* Предупреждение о данных из админки */
+        .admin-data-notice {
+            background: #f0f9ff;
+            border: 1px solid #dbeafe;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 16px 0;
+            text-align: center;
+            font-size: 13px;
+            color: #1e40af;
+        }
     </style>
 </head>
 <body>
@@ -732,6 +744,10 @@
                     <button class="form-button" id="mainFindButton">
                         <i class="fas fa-search"></i> Найти лучшие варианты
                     </button>
+                    
+                    <div class="admin-data-notice" id="adminNotice">
+                        <i class="fas fa-sync-alt"></i> Данные загружаются из админ-панели
+                    </div>
                     
                     <div class="error-message hidden" id="apiError">
                         <i class="fas fa-exclamation-triangle"></i>
@@ -840,12 +856,15 @@
         const CONFIG = {
             // API ключ из админ-панели
             // ЗАМЕНИТЕ ЭТОТ КЛЮЧ НА КЛЮЧ ИЗ ВАШЕЙ АДМИН-ПАНЕЛИ
-            API_KEY: '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' + Math.random().toString(36).substr(2, 9),
+            API_KEY: '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',
+            
+            // Лендинг 1 (FinAI)
+            LANDING_NUMBER: 1,
             
             // Ключи localStorage
             LOCAL_KEYS: {
-                OFFERS: 'landing_offers_cache',
-                LAST_SYNC: 'landing_last_sync',
+                OFFERS: 'landing1_offers_cache',
+                LAST_SYNC: 'landing1_last_sync',
                 CACHE_TTL: 5 * 60 * 1000 // 5 минут кэширования
             }
         };
@@ -864,7 +883,7 @@
             // Загрузка офферов из админки
             await loadOffersFromAdmin();
             
-            console.log('FinAI: Готов к работе');
+            console.log(`FinAI: Готов к работе. Загружено ${allOffers.length} офферов`);
         });
 
         // ===================== ЗАГРУЗКА ОФФЕРОВ ИЗ АДМИНКИ =====================
@@ -875,28 +894,31 @@
                 if (cachedData) {
                     allOffers = cachedData;
                     console.log('Используем кэшированные офферы:', allOffers.length);
+                    updateConnectionStatus(true);
                     return true;
                 }
                 
-                // В реальном проекте здесь был бы fetch к API админки
-                // Для демо загружаем из localStorage админки
+                // Загружаем из localStorage админки
                 const adminData = localStorage.getItem('admin_offers');
                 
                 if (adminData) {
                     const data = JSON.parse(adminData);
-                    allOffers = data.offers || data || [];
+                    const allAdminOffers = data.offers || data || [];
+                    
+                    // Фильтруем только активные офферы для лендинга 2
+                    allOffers = allAdminOffers.filter(offer => 
+                        offer.status === 'active' && 
+                        offer.landing2 === true
+                    );
+                    
                     console.log('Загружено из админки:', allOffers.length);
+                    updateConnectionStatus(true);
                 } else {
                     // Если в админке нет данных, используем демо
                     allOffers = getDemoOffers();
                     console.log('Используем демо-данные:', allOffers.length);
+                    updateConnectionStatus(false);
                 }
-                
-                // Фильтруем только активные офферы для лендинга 2
-                allOffers = allOffers.filter(offer => 
-                    offer.status === 'active' && 
-                    offer.landing2 === true
-                );
                 
                 // Кэшируем
                 cacheOffers(allOffers);
@@ -905,10 +927,8 @@
                 
             } catch (error) {
                 console.error('Ошибка загрузки офферов:', error);
-                allOffers = getDemoOffers().filter(offer => 
-                    offer.status === 'active' && 
-                    offer.landing2 === true
-                );
+                allOffers = getDemoOffers();
+                updateConnectionStatus(false);
                 return false;
             }
         }
@@ -1176,9 +1196,18 @@
             if (offer.term_min <= 7) {
                 conditions.push('Быстрая выдача');
             }
+            if (offer.rate_min === 0) {
+                conditions.push('Первый займ 0%');
+            }
             
-            // Генерация ссылки (используем link_landing2 из админки)
-            const offerLink = offer.link_landing2 || '#';
+            // Генерация ссылки в зависимости от номера лендинга
+            const offerLink = CONFIG.LANDING_NUMBER === 1 ? 
+                (offer.link_landing1 || '#') : 
+                (offer.link_landing2 || '#');
+            
+            // Генерация звезд рейтинга на основе approval
+            const ratingValue = 4 + (offer.approval / 100) * 1.5; // От 4 до 5.5
+            const formattedRating = ratingValue.toFixed(1);
             
             return `
                 <div class="mfo-card">
@@ -1188,8 +1217,8 @@
                             ${offer.name}
                         </div>
                         <div class="mfo-rating">
-                            ${generateStars(4.5 + Math.random() * 0.5)}
-                            <span>${(4.5 + Math.random() * 0.5).toFixed(1)}</span>
+                            ${generateStars(ratingValue)}
+                            <span>${formattedRating}</span>
                         </div>
                     </div>
                     
@@ -1227,7 +1256,7 @@
                                     <i class="fas fa-bolt"></i> Рассмотрение
                                 </div>
                                 <div class="param-value">
-                                    5-15 минут
+                                    3-10 минут
                                 </div>
                             </div>
                         </div>
@@ -1278,7 +1307,9 @@
                     rate_min: 0,
                     rate_max: 0.8,
                     approval: 96,
+                    link_landing1: '#',
                     link_landing2: '#',
+                    landing1: true,
                     landing2: true,
                     icon: 'bolt',
                     incomeTypes: ['official', 'unofficial', 'benefits', 'noincome'],
@@ -1296,7 +1327,9 @@
                     rate_min: 0.5,
                     rate_max: 1,
                     approval: 94,
+                    link_landing1: '#',
                     link_landing2: '#',
+                    landing1: true,
                     landing2: true,
                     icon: 'shield-alt',
                     incomeTypes: ['unofficial', 'benefits', 'noincome'],
@@ -1314,37 +1347,69 @@
                     rate_min: 0,
                     rate_max: 0.5,
                     approval: 92,
+                    link_landing1: '#',
                     link_landing2: '#',
+                    landing1: true,
                     landing2: true,
                     icon: 'star',
                     incomeTypes: ['official', 'unofficial'],
                     historyTypes: ['none', 'small'],
                     status: 'active'
+                },
+                {
+                    id: 'offer_4',
+                    name: 'СрочноДеньги',
+                    description: 'Для срочных нужд. Минимальные требования к документам',
+                    amount_min: 500,
+                    amount_max: 15000,
+                    term_min: 5,
+                    term_max: 20,
+                    rate_min: 0.8,
+                    rate_max: 1.5,
+                    approval: 98,
+                    link_landing1: '#',
+                    link_landing2: '#',
+                    landing1: true,
+                    landing2: false,
+                    icon: 'rocket',
+                    incomeTypes: ['unofficial', 'benefits', 'noincome'],
+                    historyTypes: ['none', 'small', 'current', 'bad'],
+                    status: 'active'
                 }
             ];
         }
 
-        // ===================== ПРОВЕРКА ПОДКЛЮЧЕНИЯ =====================
-        function checkConnection() {
-            const adminData = localStorage.getItem('admin_offers');
-            const errorElement = document.getElementById('apiError');
+        // ===================== ОБНОВЛЕНИЕ СТАТУСА ПОДКЛЮЧЕНИЯ =====================
+        function updateConnectionStatus(connected) {
+            const adminNotice = document.getElementById('adminNotice');
+            const apiError = document.getElementById('apiError');
             
-            if (!adminData) {
-                errorElement.innerHTML = `
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <p>Админ-панель не подключена. Используются демо-данные.</p>
-                    <p style="font-size: 0.9rem; margin-top: 10px;">
-                        Перейдите в админку по адресу: <code>/admin/</code>
-                    </p>
+            if (connected) {
+                adminNotice.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    Данные загружены из админ-панели (${allOffers.length} офферов)
                 `;
-                errorElement.classList.remove('hidden');
+                adminNotice.style.background = '#f0fdf4';
+                adminNotice.style.borderColor = '#dcfce7';
+                adminNotice.style.color = '#065f46';
+                apiError.classList.add('hidden');
             } else {
-                errorElement.classList.add('hidden');
+                adminNotice.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Админ-панель не подключена. Используются демо-данные
+                `;
+                adminNotice.style.background = '#fef3c7';
+                adminNotice.style.borderColor = '#fbbf24';
+                adminNotice.style.color = '#92400e';
+                apiError.classList.remove('hidden');
             }
         }
 
         // Проверяем подключение при загрузке
-        setTimeout(checkConnection, 1000);
+        setTimeout(() => {
+            const adminData = localStorage.getItem('admin_offers');
+            updateConnectionStatus(!!adminData);
+        }, 1000);
     </script>
 </body>
 </html>
