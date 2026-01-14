@@ -1724,21 +1724,21 @@
 
     <script>
         // ===================== КОНФИГУРАЦИЯ =====================
-        const CONFIG = {
-            // API ключ из админ-панели
-            // ЗАМЕНИТЕ ЭТОТ КЛЮЧ НА КЛЮЧ ИЗ ВАШЕЙ АДМИН-ПАНЕЛИ
-            API_KEY: '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',
-            
-            // Лендинг 1
-            LANDING_NUMBER: 2,
-            
-            // Ключи localStorage для кэширования
-            LOCAL_KEYS: {
-                OFFERS_CACHE: 'landing1_offers_cache',
-                LAST_SYNC: 'landing1_last_sync',
-                CACHE_TTL: 5 * 60 * 1000 // 5 минут
-            }
-        };
+       const CONFIG = {
+    // API ключ из админ-панели
+    // ЗАМЕНИТЕ ЭТОТ КЛЮЧ НА КЛЮЧ ИЗ ВАШЕЙ АДМИН-ПАНЕЛИ
+    API_KEY: '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',
+    
+    // Лендинг 2 (FinAI)
+    LANDING_NUMBER: 2,
+    
+    // Ключи localStorage
+    LOCAL_KEYS: {
+        OFFERS: 'landing2_offers_cache',
+        LAST_SYNC: 'landing2_last_sync',
+        CACHE_TTL: 5 * 60 * 1000 // 5 минут кэширования
+    }
+};
 
         // ===================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====================
         let offersData = []; // Все офферы из админки для этого лендинга
