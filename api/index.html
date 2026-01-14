@@ -1,1 +1,48 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Loan Admin API</title>
+    <script>
+        // Простой API для чтения данных
+        async function getData() {
+            try {
+                // GitHub Pages путь к файлам
+                const baseUrl = window.location.origin;
+                const [offersRes, settingsRes] = await Promise.all([
+                    fetch(`${baseUrl}/data/offers.json`),
+                    fetch(`${baseUrl}/data/settings.json`)
+                ]);
+                
+                const offers = await offersRes.json();
+                const settings = await settingsRes.json();
+                
+                return {
+                    success: true,
+                    offers: offers.offers,
+                    settings: settings,
+                    last_updated: offers.last_updated
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    error: error.message,
+                    offers: [],
+                    settings: {}
+                };
+            }
+        }
+        
+        // Экспортируем функции
+        window.APIClient = {
+            getData,
+            baseUrl: window.location.origin.replace('/api', '')
+        };
+    </script>
+</head>
+<body>
+    <h1>Loan Admin API</h1>
+    <p>Это статический API для системы управления офферами.</p>
+    <p>Все методы доступны через window.APIClient</p>
+</body>
+</html>
