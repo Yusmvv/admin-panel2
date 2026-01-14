@@ -855,17 +855,14 @@
         // ===================== КОНФИГУРАЦИЯ =====================
         const CONFIG = {
             // API ключ из админ-панели
-            // ЗАМЕНИТЕ ЭТОТ КЛЮЧ НА КЛЮЧ ИЗ ВАШЕЙ АДМИН-ПАНЕЛИ
             API_KEY: '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',
             
             // Лендинг 1 (FinAI)
             LANDING_NUMBER: 1,
             
-            // Ключи localStorage
+            // Ключ localStorage для общего доступа (ИСПРАВЛЕНО)
             LOCAL_KEYS: {
-                OFFERS: 'landing1_offers_cache',
-                LAST_SYNC: 'landing1_last_sync',
-                CACHE_TTL: 5 * 60 * 1000 // 5 минут кэширования
+                OFFERS: 'admin_offers' // Общий ключ с админкой
             }
         };
 
@@ -889,29 +886,21 @@
         // ===================== ЗАГРУЗКА ОФФЕРОВ ИЗ АДМИНКИ =====================
         async function loadOffersFromAdmin() {
             try {
-                // Проверяем кэш
-                const cachedData = getCachedOffers();
-                if (cachedData) {
-                    allOffers = cachedData;
-                    console.log('Используем кэшированные офферы:', allOffers.length);
-                    updateConnectionStatus(true);
-                    return true;
-                }
-                
-                // Загружаем из localStorage админки
-                const adminData = localStorage.getItem('admin_offers');
+                // Загружаем из localStorage админки (ИСПРАВЛЕНО ключ)
+                const adminData = localStorage.getItem(CONFIG.LOCAL_KEYS.OFFERS);
                 
                 if (adminData) {
                     const data = JSON.parse(adminData);
-                    const allAdminOffers = data.offers || data || [];
+                    // data может быть массивом или объектом с массивом offers
+                    const allAdminOffers = Array.isArray(data) ? data : (data.offers || data || []);
                     
-                    // Фильтруем только активные офферы для лендинга 2
+                    // Фильтруем только активные офферы для лендинга 1
                     allOffers = allAdminOffers.filter(offer => 
                         offer.status === 'active' && 
-                        offer.landing2 === true
+                        offer.landing1 === true
                     );
                     
-                    console.log('Загружено из админки:', allOffers.length);
+                    console.log('Загружено из админки для лендинга 1:', allOffers.length);
                     updateConnectionStatus(true);
                 } else {
                     // Если в админке нет данных, используем демо
@@ -920,9 +909,6 @@
                     updateConnectionStatus(false);
                 }
                 
-                // Кэшируем
-                cacheOffers(allOffers);
-                
                 return true;
                 
             } catch (error) {
@@ -930,36 +916,6 @@
                 allOffers = getDemoOffers();
                 updateConnectionStatus(false);
                 return false;
-            }
-        }
-
-        // ===================== КЭШИРОВАНИЕ =====================
-        function getCachedOffers() {
-            try {
-                const cache = localStorage.getItem(CONFIG.LOCAL_KEYS.OFFERS);
-                const lastSync = localStorage.getItem(CONFIG.LOCAL_KEYS.LAST_SYNC);
-                
-                if (!cache || !lastSync) return null;
-                
-                const cacheAge = Date.now() - parseInt(lastSync);
-                if (cacheAge > CONFIG.LOCAL_KEYS.CACHE_TTL) {
-                    localStorage.removeItem(CONFIG.LOCAL_KEYS.OFFERS);
-                    localStorage.removeItem(CONFIG.LOCAL_KEYS.LAST_SYNC);
-                    return null;
-                }
-                
-                return JSON.parse(cache);
-            } catch (error) {
-                return null;
-            }
-        }
-
-        function cacheOffers(offers) {
-            try {
-                localStorage.setItem(CONFIG.LOCAL_KEYS.OFFERS, JSON.stringify(offers));
-                localStorage.setItem(CONFIG.LOCAL_KEYS.LAST_SYNC, Date.now().toString());
-            } catch (error) {
-                console.error('Ошибка кэширования:', error);
             }
         }
 
@@ -1077,20 +1033,24 @@
                     return false;
                 }
                 
-                // Проверка типа дохода
-                const userIncomeType = mapUserIncomeToType(userData.income);
-                if (!offer.incomeTypes || !offer.incomeTypes.includes(userIncomeType)) {
-                    return false;
+                // Проверка типа дохода (ИСПРАВЛЕНО: проверяем наличие incomeTypes)
+                if (offer.incomeTypes && offer.incomeTypes.length > 0) {
+                    const userIncomeType = mapUserIncomeToType(userData.income);
+                    if (!offer.incomeTypes.includes(userIncomeType)) {
+                        return false;
+                    }
                 }
                 
                 // Проверка кредитной истории
-                const userHistoryType = mapUserOverdueToType(userData.overdue);
-                if (!offer.historyTypes || !offer.historyTypes.includes(userHistoryType)) {
-                    return false;
+                if (offer.historyTypes && offer.historyTypes.length > 0) {
+                    const userHistoryType = mapUserOverdueToType(userData.overdue);
+                    if (!offer.historyTypes.includes(userHistoryType)) {
+                        return false;
+                    }
                 }
                 
                 return true;
-            });
+            }).sort((a, b) => b.approval - a.approval); // Сортируем по approval
         }
 
         function mapUserIncomeToType(userIncome) {
@@ -1408,7 +1368,7 @@
         // Проверяем подключение при загрузке
         setTimeout(() => {
             const adminData = localStorage.getItem('admin_offers');
-            updateConnectionStatus(!!adminData);
+            updateConnectionStatus(!!adminData && allOffers.length > 0);
         }, 1000);
     </script>
 </body>
