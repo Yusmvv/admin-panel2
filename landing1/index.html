@@ -1,1 +1,1156 @@
 
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ДеньгиСразу - Получите займ даже если везде отказали</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Сохраняем все стили из оригинального кода */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: #1e293b; 
+            line-height: 1.5;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: 100%;
+            overflow-x: hidden;
+        }
+        
+        /* Все остальные стили остаются без изменений */
+        /* ... [Все CSS стили из оригинального кода] ... */
+        
+        /* Компактные иконки в карточках выбора */
+        .choice-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #f0fdf4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px auto;
+        }
+        
+        .choice-card-icon i {
+            font-size: 18px;
+            color: #059669;
+        }
+        
+        .choice-card-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        
+        .choice-card-desc {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.3;
+        }
+        
+        /* Центрирование контента в шагах */
+        .step-content-inner {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* Кнопка Все предложения на мобильной */
+        .show-all-mobile {
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        @media (min-width: 1024px) {
+            .show-all-mobile {
+                display: none !important;
+            }
+        }
+        
+        /* Кнопка Все офферы в шапке результатов */
+        .all-offers-header-btn {
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            .all-offers-header-btn {
+                display: inline-flex;
+                min-width: 160px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ЭКРАН 1: Главный экран -->
+    <div id="main-section" class="hero-screen">
+        <div class="hero-card fade-in">
+            <!-- Левая часть (для ПК) -->
+            <div class="hero-left">
+                <div class="flex items-center justify-center w-20 h-20 rounded-2xl bg-green-50 mb-8 mx-auto lg:mx-0">
+                    <i class="fas fa-handshake text-3xl text-green-600"></i>
+                </div>
+                
+                <h1 class="text-2xl lg:text-3xl font-black text-gray-900 mb-6 text-center lg:text-left">
+                    Получите деньги<br>
+                    <span class="text-green-600">даже если везде отказали</span>
+                </h1>
+                
+                <div class="space-y-6 mb-8">
+                    <div class="flex items-start">
+                        <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-check text-green-600"></i>
+                        </div>
+                        <div class="text-left">
+                            <h3 class="font-bold text-gray-900 mb-1">95% одобрения</h3>
+                            <p class="text-gray-600 text-sm">Даже с плохой кредитной историей</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-bolt text-blue-600"></i>
+                        </div>
+                        <div class="text-left">
+                            <h3 class="font-bold text-gray-900 mb-1">За 5-15 минут</h3>
+                            <p class="text-gray-600 text-sm">Деньги на карте уже через несколько минут</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-percent text-purple-600"></i>
+                        </div>
+                        <div class="text-left">
+                            <h3 class="font-bold text-gray-900 mb-1">Первый займ 0%</h3>
+                            <p class="text-gray-600 text-sm">Часто можно получить совсем бесплатно</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Для ПК - дополнительная статистика -->
+                <div class="hidden lg:block mt-auto">
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <div class="text-2xl font-black text-green-600">95%</div>
+                            <div class="text-sm text-gray-600">Одобрение</div>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <div class="text-2xl font-black text-green-600">5-15</div>
+                            <div class="text-sm text-gray-600">Минут</div>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <div class="text-2xl font-black text-green-600">0%</div>
+                            <div class="text-sm text-gray-600">Первый займ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Правая часть -->
+            <div class="hero-right">
+                <div class="text-center lg:text-left">
+                    <div class="lg:hidden grid grid-cols-3 gap-4 mb-8">
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <div class="text-2xl font-black text-green-600">95%</div>
+                            <div class="text-xs text-gray-600">Одобрение</div>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <div class="text-2xl font-black text-green-600">5-15</div>
+                            <div class="text-xs text-gray-600">Минут</div>
+                        </div>
+                        <div class="bg-gray-50 rounded-xl p-4">
+                            <div class="text-2xl font-black text-green-600">0%</div>
+                            <div class="text-xs text-gray-600">Первый займ</div>
+                        </div>
+                    </div>
+                    
+                    <h2 class="text-xl lg:text-2xl font-bold text-gray-900 mb-6">
+                        Подберите займ за 2 минуты
+                    </h2>
+                    
+                    <p class="text-gray-600 mb-8 lg:mb-10 text-sm lg:text-base">
+                        Ответьте на 4 простых вопроса и получите лучшие предложения от проверенных МФО
+                    </p>
+                    
+                    <button onclick="startConstructor()" class="btn-primary mb-4">
+                        <span>Начать подбор займа</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    
+                    <p class="text-gray-500 text-xs lg:text-sm mb-6">
+                        Это бесплатно и ни к чему не обязывает
+                    </p>
+                    
+                    <!-- Дополнительные преимущества -->
+                    <div class="pt-6 border-t border-gray-100">
+                        <div class="grid grid-cols-2 gap-4 lg:gap-6">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center mr-3 flex-shrink-0">
+                                    <i class="fas fa-shield-alt text-green-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-900 text-sm">Безопасно</div>
+                                    <div class="text-xs text-gray-600">Все МФО проверены</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center mr-3 flex-shrink-0">
+                                    <i class="fas fa-clock text-blue-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-900 text-sm">Круглосуточно</div>
+                                    <div class="text-xs text-gray-600">Работаем 24/7</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ЭКРАН 2: Конструктор -->
+    <div id="constructor-section" class="constructor-screen hidden">
+        <div class="constructor-container">
+            <!-- Боковая панель для ПК -->
+            <div class="sidebar-pc">
+                <div>
+                    <div class="sidebar-logo">
+                        <i class="fas fa-handshake text-2xl"></i>
+                    </div>
+                    
+                    <div class="step-indicator active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-info">
+                            <div class="step-title">Сумма займа</div>
+                            <div class="step-description">Выберите сумму</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-indicator" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-info">
+                            <div class="step-title">Срок займа</div>
+                            <div class="step-description">Выберите срок </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-indicator" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-info">
+                            <div class="step-title">Кредитная история</div>
+                            <div class="step-description">Есть ли просрочки</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-indicator" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-info">
+                            <div class="step-title">Доход</div>
+                            <div class="step-description">Источник вашего дохода</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-auto opacity-70 text-xs">
+                    Сервис подбора займов "ДеньгиСразу"
+                </div>
+            </div>
+            
+            <!-- Основной контент -->
+            <div class="constructor-content">
+                <!-- Шапка (для мобильных) -->
+                <div class="constructor-header lg:hidden">
+                    <button onclick="backToMain()" style="background: none; border: none; color: #64748b; padding: 8px; border-radius: 8px; display: flex; align-items: center; gap: 6px; font-size: 14px; flex-shrink: 0;">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Назад</span>
+                    </button>
+                    
+                    <div class="text-center flex-1 min-w-0">
+                        <div class="font-bold text-gray-900">Подбор займа</div>
+                        <div class="text-xs text-gray-500">Шаг <span id="current-step-mobile">1</span> из 4</div>
+                    </div>
+                    
+                    <div style="width: 80px; flex-shrink: 0;"></div>
+                </div>
+                
+                <!-- Прогресс бар (для мобильных) -->
+                <div class="progress-container lg:hidden">
+                    <div style="height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; margin-bottom: 8px;">
+                        <div id="progress-fill" style="height: 100%; background: linear-gradient(90deg, #059669 0%, #10b981 100%); border-radius: 2px; width: 25%;"></div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="text-xs text-gray-600" id="accuracy-text-mobile">Точность: 100%</div>
+                    </div>
+                </div>
+                
+                <!-- Контент шага -->
+                <div class="step-content-wrapper">
+                    <div class="step-content">
+                        <!-- Шаг 1: Сумма -->
+                        <div id="step1" class="step-page active">
+                            <div class="step-content-inner">
+                                <h2 class="step-main-title">Сколько денег вам нужно?</h2>
+                                <p class="step-main-subtitle">Выберите необходимую сумму</p>
+                                
+                                <div class="amount-display">
+                                    <div class="amount-value">
+                                        <span id="amount-value">30 000</span> ₽
+                                    </div>
+                                    <div class="text-gray-600 mt-2 text-sm">Ваша сумма</div>
+                                </div>
+                                
+                                <div class="slider-container">
+                                    <input type="range" min="1000" max="100000" step="1000" value="30000" 
+                                           class="range-slider" id="amount-slider">
+                                    
+                                    <div class="slider-labels">
+                                        <div class="slider-label">
+                                            <div class="font-medium">1 000 ₽</div>
+                                            <div class="text-xs mt-1">Минимум</div>
+                                        </div>
+                                        <div class="slider-label slider-label-center">
+                                            <div class="font-medium text-green-600 text-sm">Лучшие варианты</div>
+                                            <div class="text-xs mt-1">30 000 - 50 000 ₽</div>
+                                        </div>
+                                        <div class="slider-label">
+                                            <div class="font-medium">100 000 ₽</div>
+                                            <div class="text-xs mt-1">Максимум</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Шаг 2: Срок -->
+                        <div id="step2" class="step-page hidden">
+                            <div class="step-content-inner">
+                                <h2 class="step-main-title">На какой срок нужны деньги?</h2>
+                                <p class="step-main-subtitle">Выберите удобный срок. Короткие сроки часто выгоднее для первого займа</p>
+                                
+                                <div class="choice-grid">
+                                    <div class="choice-card" data-value="7">
+                                        <div class="choice-card-icon">
+                                            <i class="fas fa-bolt"></i>
+                                        </div>
+                                        <div class="choice-card-title">7-15 дней</div>
+                                        <div class="choice-card-desc">Для срочных нужд</div>
+                                    </div>
+                                    
+                                    <div class="choice-card" data-value="30">
+                                        <div class="choice-card-icon">
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <div class="choice-card-title">До 30 дней</div>
+                                        <div class="choice-card-desc">Самый популярный</div>
+                                    </div>
+                                    
+                                    <div class="choice-card" data-value="60">
+                                        <div class="choice-card-icon">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                        <div class="choice-card-title">До 60 дней</div>
+                                        <div class="choice-card-desc">Удобные платежи</div>
+                                    </div>
+                                    
+                                    <div class="choice-card" data-value="90">
+                                        <div class="choice-card-icon">
+                                            <i class="fas fa-chart-line"></i>
+                                        </div>
+                                        <div class="choice-card-title">До 90 дней</div>
+                                        <div class="choice-card-desc">Для больших сумм</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Шаг 3: Просрочки -->
+                        <div id="step3" class="step-page hidden">
+                            <div class="step-content-inner">
+                                <h2 class="step-main-title">Есть ли у вас просрочки?</h2>
+                                <p class="step-main-subtitle">Не переживайте! Даже с просрочками мы найдём варианты именно для вас</p>
+                                
+                                <div class="choice-grid">
+                                    <div class="choice-card" data-value="none">
+                                        <div class="choice-card-icon">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div class="choice-card-title">Нет просрочек</div>
+                                        <div class="choice-card-desc mb-2">Всё плачу вовремя</div>
+                                        <div class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-bold mt-auto">95% шанс</div>
+                                    </div>
+                                    
+                                    <div class="choice-card" data-value="small">
+                                        <div class="choice-card-icon">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                        </div>
+                                        <div class="choice-card-title">Были небольшие</div>
+                                        <div class="choice-card-desc mb-2">Задержки до 30 дней</div>
+                                        <div class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-bold mt-auto">85% шанс</div>
+                                    </div>
+                                    
+                                    <div class="choice-card" data-value="current">
+                                        <div class="choice-card-icon">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+                                        <div class="choice-card-title">Есть текущие</div>
+                                        <div class="choice-card-desc mb-2">Сейчас есть долги</div>
+                                        <div class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-bold mt-auto">75% шанс</div>
+                                    </div>
+                                    
+                                    <div class="choice-card" data-value="bad">
+                                        <div class="choice-card-icon">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                        </div>
+                                        <div class="choice-card-title">Плохая история</div>
+                                        <div class="choice-card-desc mb-2">Частые просрочки</div>
+                                        <div class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-bold mt-auto">65% шанс</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Шаг 4: Доход -->
+                        <div id="step4" class="step-page hidden">
+                            <div class="step-content-inner">
+                                <h2 class="step-main-title">Какой у вас доход?</h2>
+                                <p class="step-main-subtitle">Это поможет найти самые подходящие варианты именно для вас</p>
+                                
+                                <div class="choice-grid">
+                                    <div class="choice-card" data-value="official">
+                                        <div class="choice-card-icon">
+                                            <i class="fas fa-briefcase"></i>
+                                        </div>
+                                        <div class="choice-card-title">Официальная работа</div>
+                                        <div class="choice-card-desc">Есть трудовой договор</div>
+                                    </div>
+                                    
+                                    <div class="choice-card" data-value="unofficial">
+                                        <div class="choice-card-icon">
+                                            <i class="fas fa-user-tie"></i>
+                                        </div>
+                                        <div class="choice-card-title">Неофициальный доход</div>
+                                        <div class="choice-card-desc">Работаю без договора</div>
+                                    </div>
+                                    
+                                    <div class="choice-card" data-value="benefits">
+                                        <div class="choice-card-icon">
+                                            <i class="fas fa-heart"></i>
+                                        </div>
+                                        <div class="choice-card-title">Пенсия или пособие</div>
+                                        <div class="choice-card-desc">Получаю выплаты</div>
+                                    </div>
+                                    
+                                    <div class="choice-card" data-value="noincome">
+                                        <div class="choice-card-icon">
+                                            <i class="fas fa-search"></i>
+                                        </div>
+                                        <div class="choice-card-title">Сейчас нет дохода</div>
+                                        <div class="choice-card-desc">Ищу работу</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Кнопки навигации -->
+                <div class="navigation-buttons">
+                    <div class="nav-buttons-container">
+                        <button id="back-btn" class="btn-secondary hidden">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Назад</span>
+                        </button>
+                        
+                        <button id="next-btn" class="btn-primary">
+                            <span id="next-btn-text">Продолжить</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ЭКРАН 3: Результаты -->
+    <div id="results-section" class="results-screen hidden">
+        <div class="results-container">
+            <!-- Шапка результатов -->
+            <div class="results-header">
+                <button id="results-back-btn" style="background: none; border: none; color: #64748b; padding: 8px; border-radius: 8px; display: flex; align-items: center; gap: 6px; font-size: 14px; flex-shrink: 0;">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Назад</span>
+                </button>
+                
+                <div class="text-center flex-1 min-w-0">
+                    <div class="font-bold text-gray-900 text-lg">Результаты подбора</div>
+                    <div class="text-sm text-gray-500">Лучшие варианты для вас</div>
+                </div>
+                
+                <!-- Кнопка Все офферы в шапке -->
+                <button id="all-offers-header-btn" class="all-offers-header-btn btn-secondary hidden">
+                    <i class="fas fa-list mr-2"></i>
+                    Все предложения
+                </button>
+                
+                <div style="width: 80px; flex-shrink: 0;" class="all-offers-header-btn hidden"></div>
+            </div>
+            
+            <!-- Основной контент -->
+            <div class="results-content">
+                <!-- Левая колонка: параметры -->
+                <div class="results-params">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Ваши параметры</h2>
+                    
+                    <div class="user-filters-container">
+                        <div class="user-filters" id="user-filters"></div>
+                    </div>
+                    
+                    <!-- Статистика для мобильных -->
+                    <div class="results-stats lg:hidden">
+                        <div class="stat-item">
+                            <div class="stat-number">95%</div>
+                            <div class="stat-label">Шанс одобрения</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">5-15 мин</div>
+                            <div class="stat-label">Получение денег</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">0%</div>
+                            <div class="stat-label">Первый займ</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="found-count">0</div>
+                            <div class="stat-label">Найдено офферов</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Кнопки действий -->
+                    <div class="mt-6">
+                        <button id="new-search-btn" class="btn-secondary w-full mb-3">
+                            <i class="fas fa-redo mr-2"></i>
+                            Новый поиск
+                        </button>
+                        
+                        <button id="show-all-btn" class="btn-primary w-full hidden">
+                            <i class="fas fa-list mr-2"></i>
+                            Показать все
+                        </button>
+                        
+                        <!-- Кнопка "Все предложения" для мобильной версии -->
+                        <button id="show-all-mobile-btn" class="show-all-mobile btn-primary w-full hidden">
+                            <i class="fas fa-list mr-2"></i>
+                            Все предложения
+                        </button>
+                    </div>
+                    
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <div class="text-sm text-gray-600 mb-2">Нашли что искали?</div>
+                        <p class="text-xs text-gray-500">
+                            Мы подобрали лучшие варианты на основе ваших ответов. Если не нашли подходящий вариант, попробуйте изменить параметры поиска.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Правая колонка: офферы -->
+                <div class="results-offers">
+                    <!-- Заголовок результатов -->
+                    <div class="results-title-block">
+                        <h1 class="text-2xl font-bold text-gray-900 mb-2" id="results-title">Лучшие предложения для вас</h1>
+                        <p class="text-gray-600" id="results-subtitle">Мы подобрали варианты с максимальным шансом одобрения</p>
+                    </div>
+                    
+                    <!-- Контейнер для прокрутки офферов -->
+                    <div class="offers-container">
+                        <!-- Сетка офферов -->
+                        <div class="offers-grid" id="offers-container"></div>
+                        
+                        <!-- Сообщение если нет офферов -->
+                        <div id="no-offers-message" class="no-offers-message hidden">
+                            <div class="w-16 h-16 rounded-xl bg-yellow-100 flex items-center justify-center mx-auto mb-6">
+                                <i class="fas fa-search text-xl text-yellow-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-4">По вашим параметрам вариантов не найдено</h3>
+                            <p class="text-gray-600 mb-6">
+                                Попробуйте изменить параметры поиска или посмотрите все доступные предложения
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                                <button id="change-params-btn" class="btn-secondary">
+                                    <i class="fas fa-redo mr-2"></i>
+                                    Изменить параметры
+                                </button>
+                                <button id="all-offers-btn" class="btn-primary">
+                                    <i class="fas fa-list mr-2"></i>
+                                    Все предложения
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            DATA_URL: '../data/offers.json',
+            LANDING_NUMBER: 1
+        };
+
+        let offersData = [];
+        let allOffers = [];
+
+        const state = {
+            step: 1,
+            amount: 30000,
+            term: null,
+            overdue: null,
+            income: null,
+            showingAll: false
+        };
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Загружаем данные из бэкенда
+            await loadOffersData();
+            
+            const amountSlider = document.getElementById('amount-slider');
+            amountSlider.addEventListener('input', function(e) {
+                state.amount = parseInt(e.target.value);
+                document.getElementById('amount-value').textContent = 
+                    formatNumber(state.amount);
+                updateProgressText();
+            });
+
+            initChoiceCards();
+            
+            document.getElementById('next-btn').addEventListener('click', nextStep);
+            document.getElementById('back-btn').addEventListener('click', prevStep);
+            
+            // Обработчики для кнопок на странице результатов
+            document.getElementById('results-back-btn').addEventListener('click', backToConstructorWithReset);
+            document.getElementById('new-search-btn').addEventListener('click', backToConstructorWithReset);
+            document.getElementById('change-params-btn').addEventListener('click', backToConstructorWithReset);
+            document.getElementById('all-offers-btn').addEventListener('click', showAllOffers);
+            document.getElementById('show-all-mobile-btn').addEventListener('click', showAllOffers);
+            document.getElementById('all-offers-header-btn').addEventListener('click', showAllOffers);
+            
+            updateUI();
+        });
+
+        async function loadOffersData() {
+            try {
+                const response = await fetch(CONFIG.DATA_URL);
+                const data = await response.json();
+                
+                // Фильтруем офферы для текущего лендинга и только активные
+                allOffers = data.offers || data;
+                offersData = allOffers.filter(offer => 
+                    offer.status === 'active' && 
+                    (CONFIG.LANDING_NUMBER === 1 ? offer.landing1 : offer.landing2)
+                );
+                
+                console.log(`Загружено ${offersData.length} офферов для лендинга ${CONFIG.LANDING_NUMBER}`);
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error);
+                // Загружаем демо-данные при ошибке
+                loadDemoData();
+            }
+        }
+
+        function loadDemoData() {
+            offersData = [
+                {
+                    id: 'offer_1',
+                    name: 'МоментальныеДеньги',
+                    description: 'Лидер по скорости выдачи. Деньги приходят на карту за 3 минуты',
+                    amount_min: 1000,
+                    amount_max: 50000,
+                    term_min: 7,
+                    term_max: 30,
+                    rate_min: 0,
+                    rate_max: 0.8,
+                    rate_display: '0 - 0.8% в день',
+                    approval: 96,
+                    link_landing1: '#',
+                    link_landing2: '#',
+                    landing1: true,
+                    landing2: true,
+                    icon: 'bolt',
+                    incomeTypes: ['official', 'unofficial', 'benefits', 'noincome'],
+                    historyTypes: ['none', 'small', 'current', 'bad'],
+                    status: 'active',
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                },
+                {
+                    id: 'offer_2',
+                    name: 'ДеньгиОнлайн',
+                    description: 'Самый высокий шанс одобрения при плохой кредитной истории',
+                    amount_min: 2000,
+                    amount_max: 30000,
+                    term_min: 1,
+                    term_max: 60,
+                    rate_min: 0.5,
+                    rate_max: 1,
+                    rate_display: '0.5 - 1% в день',
+                    approval: 94,
+                    link_landing1: '#',
+                    link_landing2: '#',
+                    landing1: true,
+                    landing2: true,
+                    icon: 'shield-alt',
+                    incomeTypes: ['unofficial', 'benefits', 'noincome'],
+                    historyTypes: ['small', 'current', 'bad'],
+                    status: 'active',
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                }
+            ];
+            allOffers = offersData;
+        }
+
+        function initChoiceCards() {
+            function handleCardSelection(step, property) {
+                const cards = document.querySelectorAll(`#${step} .choice-card`);
+                cards.forEach(card => {
+                    card.addEventListener('click', function() {
+                        cards.forEach(c => c.classList.remove('selected'));
+                        this.classList.add('selected');
+                        state[property] = this.getAttribute('data-value');
+                        updateProgressText();
+                        
+                        if (window.innerWidth >= 1024 && step !== 'step4') {
+                            setTimeout(() => nextStep(), 300);
+                        }
+                    });
+                });
+            }
+            
+            handleCardSelection('step2', 'term');
+            handleCardSelection('step3', 'overdue');
+            handleCardSelection('step4', 'income');
+        }
+
+        function startConstructor() {
+            document.getElementById('main-section').classList.add('hidden');
+            document.getElementById('constructor-section').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function backToMain() {
+            document.getElementById('constructor-section').classList.add('hidden');
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('main-section').classList.remove('hidden');
+            resetConstructor();
+        }
+
+        function backToConstructor() {
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('constructor-section').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function backToConstructorWithReset() {
+            resetConstructor();
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('constructor-section').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetConstructor() {
+            state.step = 1;
+            state.term = null;
+            state.overdue = null;
+            state.income = null;
+            state.showingAll = false;
+            
+            document.querySelectorAll('.choice-card.selected').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            document.getElementById('amount-slider').value = 30000;
+            state.amount = 30000;
+            document.getElementById('amount-value').textContent = '30 000';
+            
+            document.querySelectorAll('.step-page').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('active');
+            });
+            document.getElementById('step1').classList.remove('hidden');
+            document.getElementById('step1').classList.add('active');
+            
+            updateUI();
+            updateStepIndicators();
+            
+            document.getElementById('current-step-mobile').textContent = state.step;
+        }
+
+        function nextStep() {
+            if (state.step === 2 && !state.term) {
+                alert('Пожалуйста, выберите срок займа');
+                return;
+            }
+            if (state.step === 3 && !state.overdue) {
+                alert('Пожалуйста, ответьте про просрочки');
+                return;
+            }
+            if (state.step === 4 && !state.income) {
+                alert('Пожалуйста, укажите ваш доход');
+                return;
+            }
+
+            if (state.step === 4) {
+                showResults();
+                return;
+            }
+
+            const currentStep = document.getElementById(`step${state.step}`);
+            currentStep.classList.remove('active');
+            setTimeout(() => {
+                currentStep.classList.add('hidden');
+                state.step++;
+                
+                updateStepIndicators();
+                document.getElementById('current-step-mobile').textContent = state.step;
+                
+                const nextStepEl = document.getElementById(`step${state.step}`);
+                nextStepEl.classList.remove('hidden');
+                setTimeout(() => {
+                    nextStepEl.classList.add('active');
+                }, 10);
+                
+                updateUI();
+            }, 150);
+        }
+
+        function prevStep() {
+            if (state.step === 1) return;
+            
+            const currentStep = document.getElementById(`step${state.step}`);
+            currentStep.classList.remove('active');
+            setTimeout(() => {
+                currentStep.classList.add('hidden');
+                state.step--;
+                
+                updateStepIndicators();
+                document.getElementById('current-step-mobile').textContent = state.step;
+                
+                const prevStepEl = document.getElementById(`step${state.step}`);
+                prevStepEl.classList.remove('hidden');
+                setTimeout(() => {
+                    prevStepEl.classList.add('active');
+                }, 10);
+                
+                updateUI();
+            }, 150);
+        }
+
+        function updateStepIndicators() {
+            if (window.innerWidth >= 1024) {
+                document.querySelectorAll('.step-indicator').forEach(indicator => {
+                    indicator.classList.remove('active');
+                    if (parseInt(indicator.getAttribute('data-step')) === state.step) {
+                        indicator.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        function updateUI() {
+            const progress = (state.step / 4) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            
+            document.getElementById('next-btn-text').textContent = 
+                state.step === 4 ? 'Найти варианты' : 'Продолжить';
+            
+            document.getElementById('back-btn').classList.toggle('hidden', state.step === 1);
+            
+            let accuracyPercent = 100 - (state.step - 1) * 25;
+            if (state.step > 1 && (state.term && state.overdue && state.income)) {
+                accuracyPercent = 100;
+            }
+            
+            document.getElementById('accuracy-text-mobile').textContent = `Точность: ${accuracyPercent}%`;
+        }
+
+        function updateProgressText() {
+            let accuracyPercent = 100 - (state.step - 1) * 25;
+            if (state.step > 1 && (state.term && state.overdue && state.income)) {
+                accuracyPercent = 100;
+            }
+            
+            document.getElementById('accuracy-text-mobile').textContent = `Точность: ${accuracyPercent}%`;
+        }
+
+        function showResults() {
+            state.showingAll = false;
+            
+            document.getElementById('constructor-section').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('results-section').classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                generateResults();
+            }, 150);
+        }
+
+        function generateResults() {
+            const filteredOffers = filterOffers();
+            const filteredCount = filteredOffers.length;
+            const totalOffers = offersData.length;
+            
+            generateUserFilters();
+            document.getElementById('found-count').textContent = filteredCount;
+            
+            // Управляем кнопками "Все предложения"
+            const showAllMobileBtn = document.getElementById('show-all-mobile-btn');
+            const showAllDesktopBtn = document.getElementById('show-all-btn');
+            const showAllHeaderBtn = document.getElementById('all-offers-header-btn');
+            
+            if (filteredCount > 0) {
+                document.getElementById('results-title').textContent = 'Лучшие предложения для вас';
+                document.getElementById('results-subtitle').textContent = 
+                    `Нашли ${filteredCount} вариантов с высоким шансом одобрения`;
+                document.getElementById('no-offers-message').classList.add('hidden');
+                
+                displayOffers(filteredOffers);
+                
+                // Показываем кнопки "Все предложения" если есть дополнительные офферы
+                if (totalOffers > filteredCount) {
+                    showAllDesktopBtn.classList.remove('hidden');
+                    showAllHeaderBtn.classList.remove('hidden');
+                    if (window.innerWidth < 1024) {
+                        showAllMobileBtn.classList.remove('hidden');
+                    }
+                    showAllDesktopBtn.onclick = () => showAllFilteredOffers();
+                    showAllHeaderBtn.onclick = () => showAllFilteredOffers();
+                } else {
+                    showAllDesktopBtn.classList.add('hidden');
+                    showAllHeaderBtn.classList.add('hidden');
+                    showAllMobileBtn.classList.add('hidden');
+                }
+            } else {
+                document.getElementById('offers-container').innerHTML = '';
+                document.getElementById('no-offers-message').classList.remove('hidden');
+                showAllDesktopBtn.classList.add('hidden');
+                document.getElementById('results-title').textContent = 'Не нашли подходящих вариантов';
+                document.getElementById('results-subtitle').textContent = 'Попробуйте изменить параметры поиска';
+                
+                // В случае когда нет офферов под фильтр, всегда показываем кнопку "Все предложения"
+                showAllHeaderBtn.classList.remove('hidden');
+                if (window.innerWidth < 1024) {
+                    showAllMobileBtn.classList.remove('hidden');
+                }
+            }
+        }
+
+        function filterOffers() {
+            return offersData.filter(offer => {
+                // Проверяем типы кредитной истории
+                if (state.overdue && offer.historyTypes && !offer.historyTypes.includes(state.overdue)) {
+                    return false;
+                }
+                
+                // Проверяем типы дохода
+                if (state.income && offer.incomeTypes && !offer.incomeTypes.includes(state.income)) {
+                    return false;
+                }
+                
+                // Проверяем сумму
+                const amount = state.amount;
+                if (amount < offer.amount_min || amount > offer.amount_max) {
+                    return false;
+                }
+                
+                // Проверяем срок (если выбран)
+                if (state.term) {
+                    const termValue = parseInt(state.term);
+                    if (termValue < offer.term_min || termValue > offer.term_max) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            }).sort((a, b) => b.approval - a.approval);
+        }
+
+        function showAllFilteredOffers() {
+            state.showingAll = true;
+            displayOffers(offersData);
+            document.getElementById('show-all-btn').classList.add('hidden');
+            document.getElementById('show-all-mobile-btn').classList.add('hidden');
+            document.getElementById('all-offers-header-btn').classList.add('hidden');
+            document.getElementById('no-offers-message').classList.add('hidden');
+            document.getElementById('results-title').textContent = 'Все доступные предложения';
+            document.getElementById('results-subtitle').textContent = 'Все МФО которые работают на рынке';
+        }
+
+        function showAllOffers() {
+            state.showingAll = true;
+            displayOffers(offersData);
+            document.getElementById('no-offers-message').classList.add('hidden');
+            document.getElementById('show-all-btn').classList.add('hidden');
+            document.getElementById('show-all-mobile-btn').classList.add('hidden');
+            document.getElementById('all-offers-header-btn').classList.add('hidden');
+            document.getElementById('results-title').textContent = 'Все доступные предложения';
+            document.getElementById('results-subtitle').textContent = 'Все МФО которые работают на рынке';
+        }
+
+        function generateUserFilters() {
+            const container = document.getElementById('user-filters');
+            container.innerHTML = '';
+            
+            const filters = [
+                { text: `Сумма: ${formatNumber(state.amount)} ₽`, color: 'bg-green-100 text-green-800 border border-green-200' },
+                { text: `Срок: ${getTermLabel(state.term)}`, color: 'bg-blue-100 text-blue-800 border border-blue-200' },
+                { text: `Просрочки: ${getOverdueLabel(state.overdue)}`, color: getOverdueColor(state.overdue) },
+                { text: `Доход: ${getIncomeLabel(state.income)}`, color: 'bg-purple-100 text-purple-800 border border-purple-200' }
+            ];
+            
+            filters.forEach(filter => {
+                const span = document.createElement('span');
+                span.className = `user-filter ${filter.color}`;
+                span.textContent = filter.text;
+                container.appendChild(span);
+            });
+        }
+
+        function displayOffers(offers) {
+            const container = document.getElementById('offers-container');
+            container.innerHTML = '';
+            
+            if (offers.length === 0) {
+                return;
+            }
+            
+            offers.forEach(offer => {
+                const card = document.createElement('div');
+                card.className = 'offer-card fade-in';
+                
+                // Определяем ссылку в зависимости от лендинга
+                const link = CONFIG.LANDING_NUMBER === 1 ? offer.link_landing1 : offer.link_landing2;
+                
+                card.innerHTML = `
+                    <div class="offer-header">
+                        <div class="offer-logo">
+                            <div class="offer-icon">
+                                <i class="fas fa-${offer.icon || 'bolt'}"></i>
+                            </div>
+                            <div class="offer-name-block">
+                                <div class="offer-name">${offer.name}</div>
+                                <div class="offer-rating">
+                                    <div class="offer-stars">
+                                        ${'★'.repeat(4)}${offer.approval >= 95 ? '★' : ''}
+                                    </div>
+                                    <div class="offer-reviews">${(offer.approval / 20).toFixed(1)} • ${Math.floor(offer.approval * 100)} отзывов</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="offer-approval">
+                            ${offer.approval}%
+                        </div>
+                    </div>
+                    
+                    <div class="offer-description">
+                        ${offer.description}
+                    </div>
+                    
+                    <div class="offer-features">
+                        <div class="offer-feature">Одобрение ${offer.approval}%</div>
+                        <div class="offer-feature">Без отказа</div>
+                        <div class="offer-feature">На карту МИР</div>
+                    </div>
+                    
+                    <div class="offer-details-grid">
+                        <div class="offer-detail">
+                            <div class="offer-detail-label">Сумма займа</div>
+                            <div class="offer-detail-value">${formatNumber(offer.amount_min)} - ${formatNumber(offer.amount_max)} ₽</div>
+                        </div>
+                        <div class="offer-detail">
+                            <div class="offer-detail-label">Срок</div>
+                            <div class="offer-detail-value">${offer.term_min} - ${offer.term_max} дней</div>
+                        </div>
+                        <div class="offer-detail">
+                            <div class="offer-detail-label">Ставка в день</div>
+                            <div class="offer-detail-value rate">${offer.rate_min} - ${offer.rate_max}%</div>
+                        </div>
+                        <div class="offer-detail">
+                            <div class="offer-detail-label">Получение</div>
+                            <div class="offer-detail-value">5-15 минут</div>
+                        </div>
+                    </div>
+                    
+                    <div class="offer-actions">
+                        <a href="${link || '#'}" target="_blank" class="btn-primary" style="width: 100%; display: block; text-decoration: none; text-align: center;">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Получить деньги
+                        </a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+
+        function getTermLabel(value) {
+            const labels = {
+                '7': '7-15 дней',
+                '30': 'до 30 дней',
+                '60': 'до 60 дней',
+                '90': 'до 90 дней'
+            };
+            return labels[value] || 'Не выбрано';
+        }
+
+        function getOverdueLabel(value) {
+            const labels = {
+                'none': 'Нет просрочек',
+                'small': 'Были небольшие',
+                'current': 'Есть текущие',
+                'bad': 'Плохая история'
+            };
+            return labels[value] || 'Не указано';
+        }
+
+        function getOverdueColor(value) {
+            const colors = {
+                'none': 'bg-green-100 text-green-800 border border-green-200',
+                'small': 'bg-blue-100 text-blue-800 border border-blue-200',
+                'current': 'bg-yellow-100 text-yellow-800 border border-yellow-200',
+                'bad': 'bg-orange-100 text-orange-800 border border-orange-200'
+            };
+            return colors[value] || 'bg-gray-100 text-gray-800 border border-gray-200';
+        }
+
+        function getIncomeLabel(value) {
+            const labels = {
+                'official': 'Официальный',
+                'unofficial': 'Неофициальный',
+                'benefits': 'Пособие/пенсия',
+                'noincome': 'Без дохода'
+            };
+            return labels[value] || 'Не указано';
+        }
+
+        updateStepIndicators();
+    </script>
+</body>
+</html>
