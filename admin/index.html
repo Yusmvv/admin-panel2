@@ -252,6 +252,9 @@
                 <button class="btn" data-section="offers" style="justify-content: flex-start; background: rgba(255,255,255,0.1); color: white;">
                     <i class="fas fa-gem"></i> Офферы
                 </button>
+                <button class="btn" data-section="api" style="justify-content: flex-start; background: rgba(255,255,255,0.1); color: white;">
+                    <i class="fas fa-key"></i> API Ключ
+                </button>
                 <button class="btn" data-section="backup" style="justify-content: flex-start; background: rgba(255,255,255,0.1); color: white;">
                     <i class="fas fa-database"></i> Бэкап
                 </button>
@@ -314,6 +317,86 @@
                             <!-- Офферы будут здесь -->
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Секция API ключа -->
+        <div id="api-section" style="display: none;">
+            <h1 style="font-size: 28px; font-weight: 700; margin-bottom: 30px;">API Ключ для лендингов</h1>
+            
+            <div class="stat-card">
+                <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 20px;">Текущий API ключ</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Ваш API ключ:</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="text" id="api-key" class="form-control" value="ВАШ_API_КЛЮЧ" readonly style="background: #f3f4f6; font-family: monospace;">
+                        <button id="copy-api-key" class="btn btn-primary">
+                            <i class="fas fa-copy"></i> Копировать
+                        </button>
+                        <button id="generate-api-key" class="btn btn-success">
+                            <i class="fas fa-sync-alt"></i> Сгенерировать новый
+                        </button>
+                    </div>
+                    <div class="text-sm text-gray-600 mt-2">
+                        Этот ключ нужно добавить в код лендингов в поле <code>API_KEY</code>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 15px;">Инструкция для лендингов:</h3>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+                        <p style="margin-bottom: 10px;">1. Откройте файлы лендингов:</p>
+                        <ul style="list-style: disc; padding-left: 20px; margin-bottom: 15px;">
+                            <li><code>landing1/index.html</code></li>
+                            <li><code>landing2/index.html</code></li>
+                        </ul>
+                        
+                        <p style="margin-bottom: 10px;">2. Найдите строку с API ключом:</p>
+                        <pre style="background: #1e293b; color: #f1f5f9; padding: 10px; border-radius: 6px; overflow-x: auto; margin-bottom: 15px;">
+const CONFIG = {
+    API_KEY: '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', // 
+    // ...
+};</pre>
+                        
+                        <p style="margin-bottom: 10px;">3. Замените <code>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</code> на ключ выше</p>
+                        
+                        <p style="margin-bottom: 10px;">4. Сохраните файлы и обновите лендинги</p>
+                    </div>
+                </div>
+                
+                <div class="mt-8 pt-8 border-t border-gray-200">
+                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 15px;">Лендинги</h3>
+                    <div class="grid-2">
+                        <div class="stat-card">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mr-4">
+                                    <i class="fas fa-handshake text-green-600"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold">Лендинг 1</div>
+                                    <div class="text-sm text-gray-600">ДеньгиСразу</div>
+                                </div>
+                            </div>
+                            <div class="text-sm text-gray-600 mb-2">URL:</div>
+                            <code class="text-xs bg-gray-100 p-2 rounded block">/landing1/</code>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mr-4">
+                                    <i class="fas fa-brain text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold">Лендинг 2</div>
+                                    <div class="text-sm text-gray-600">FinAI</div>
+                                </div>
+                            </div>
+                            <div class="text-sm text-gray-600 mb-2">URL:</div>
+                            <code class="text-xs bg-gray-100 p-2 rounded block">/landing2/</code>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -527,39 +610,20 @@
     <script>
         // ===================== КОНФИГУРАЦИЯ =====================
         const CONFIG = {
- 
-    GITHUB_USERNAME: 'Yusmvv', // 
-    REPO_NAME: 'loan-admin-system',
-    BRANCH: 'main',
-    
-    // GitHub Personal Access Token
-    GITHUB_TOKEN: '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', 
-    
-    // Файлы данных
-    DATA_FILES: {
-        OFFERS: 'https://api.github.com/repos/YOUR_USERNAME/loan-admin-system/contents/data/offers.json',
-        SETTINGS: 'https://api.github.com/repos/YOUR_USERNAME/loan-admin-system/contents/data/settings.json'
-    },
-    
-    // Ключи localStorage
-    LOCAL_KEYS: {
-        OFFERS: 'admin_offers',
-        SETTINGS: 'admin_settings',
-        BACKUP: 'admin_backup_'
-    },
-    
-    // Настройки по умолчанию
-    DEFAULT_SETTINGS: {
-        landing1_title: 'ДеньгиСразу - Получите займ даже если везде отказали',
-        landing2_title: 'FinAI - Подберём займ, который точно одобрят',
-        primary_color: '#3b82f6',
-        overdue_types: ['Нет просрочек', 'Есть просрочки', 'Просрочки более 30 дней', 'Судебные дела'],
-        income_types: ['Есть доход', 'Нет дохода', 'Доход не подтвержден']
-    }
-};
+            // Ключи localStorage
+            LOCAL_KEYS: {
+                OFFERS: 'admin_offers',
+                SETTINGS: 'admin_settings',
+                BACKUP: 'admin_backup_',
+                API_KEY: 'admin_api_key'
+            }
+        };
         
         // ===================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =====================
         let offers = [];
+        let settings = { 
+            api_key: 'loan_system_' + Math.random().toString(36).substr(2, 9)
+        };
         let currentEditOffer = null;
         let syncInProgress = false;
         
@@ -598,6 +662,10 @@
             document.getElementById('cancel-modal').addEventListener('click', closeModal);
             document.getElementById('offer-form').addEventListener('submit', saveOffer);
             
+            // API ключ
+            document.getElementById('copy-api-key').addEventListener('click', copyApiKey);
+            document.getElementById('generate-api-key').addEventListener('click', generateApiKey);
+            
             // Бэкап
             document.getElementById('export-data').addEventListener('click', exportData);
             document.getElementById('import-data').addEventListener('click', importData);
@@ -615,47 +683,36 @@
             updateSyncStatus('Загрузка данных...', 'loading');
             
             try {
-                // Пробуем загрузить с GitHub
-                const [offersData] = await Promise.all([
-                    fetchFromGitHub(CONFIG.DATA_FILES.OFFERS)
-                ]);
-                
-                if (offersData && offersData.offers) {
-                    offers = offersData.offers || [];
-                    updateSyncStatus('Данные загружены', 'success');
-                    saveToLocalStorage();
-                } else {
-                    throw new Error('Нет данных с GitHub');
-                }
-                
-            } catch (error) {
-                console.error('Ошибка загрузки с GitHub:', error);
-                
                 // Пробуем загрузить из localStorage
                 const localOffers = localStorage.getItem(CONFIG.LOCAL_KEYS.OFFERS);
+                const localSettings = localStorage.getItem(CONFIG.LOCAL_KEYS.SETTINGS);
+                const localApiKey = localStorage.getItem(CONFIG.LOCAL_KEYS.API_KEY);
                 
                 if (localOffers) {
                     const data = JSON.parse(localOffers);
                     offers = data.offers || data;
-                    updateSyncStatus('Используются локальные данные', 'warning');
-                } else {
-                    // Загружаем демо-данные
-                    loadDemoData();
-                    updateSyncStatus('Загружены демо-данные', 'warning');
                 }
-            }
-        }
-        
-        // Загрузка с GitHub
-        async function fetchFromGitHub(url) {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 
-                return await response.json();
+                if (localSettings) {
+                    settings = { ...settings, ...JSON.parse(localSettings) };
+                }
+                
+                if (localApiKey) {
+                    settings.api_key = localApiKey;
+                }
+                
+                updateSyncStatus('Данные загружены', 'success');
+                
+                // Обновляем поле API ключа
+                document.getElementById('api-key').value = settings.api_key || 'ВАШ_API_КЛЮЧ';
+                
             } catch (error) {
-                console.error('GitHub fetch error:', error);
-                return null;
+                console.error('Ошибка загрузки:', error);
+                updateSyncStatus('Ошибка загрузки данных', 'error');
+                
+                // Загружаем демо-данные
+                loadDemoData();
+                updateSyncStatus('Загружены демо-данные', 'warning');
             }
         }
         
@@ -668,11 +725,14 @@
                     version: '2.0'
                 }));
                 
+                localStorage.setItem(CONFIG.LOCAL_KEYS.SETTINGS, JSON.stringify(settings));
+                localStorage.setItem(CONFIG.LOCAL_KEYS.API_KEY, settings.api_key);
+                
                 // Создаем бэкап
                 const timestamp = new Date().toISOString().slice(0, 10);
                 localStorage.setItem(
                     CONFIG.LOCAL_KEYS.BACKUP + timestamp,
-                    JSON.stringify({ offers, timestamp })
+                    JSON.stringify({ offers, settings, timestamp })
                 );
                 
                 return true;
@@ -976,10 +1036,38 @@
             });
         };
         
+        // ===================== API КЛЮЧ =====================
+        function copyApiKey() {
+            const apiKeyField = document.getElementById('api-key');
+            apiKeyField.select();
+            document.execCommand('copy');
+            showNotification('API ключ скопирован в буфер обмена', 'success');
+        }
+        
+        function generateApiKey() {
+            Swal.fire({
+                title: 'Сгенерировать новый API ключ?',
+                text: 'Старый ключ перестанет работать. Нужно будет обновить ключ во всех лендингах.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Да, сгенерировать',
+                cancelButtonText: 'Отмена'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const newKey = 'loan_system_' + Math.random().toString(36).substr(2, 12);
+                    settings.api_key = newKey;
+                    document.getElementById('api-key').value = newKey;
+                    saveToLocalStorage();
+                    showNotification('Новый API ключ сгенерирован', 'success');
+                }
+            });
+        }
+        
         // ===================== БЭКАП И ИМПОРТ =====================
         function exportData() {
             const data = {
                 offers: offers,
+                settings: settings,
                 exported_at: new Date().toISOString(),
                 version: '2.0'
             };
@@ -1020,6 +1108,9 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             offers = data.offers || data;
+                            if (data.settings) settings = data.settings;
+                            if (data.api_key) settings.api_key = data.api_key;
+                            
                             saveToLocalStorage();
                             updateUI();
                             syncWithBackend();
@@ -1150,6 +1241,11 @@
                 }
             ];
             
+            // Генерируем API ключ если нет
+            if (!settings.api_key) {
+                settings.api_key = 'loan_system_' + Math.random().toString(36).substr(2, 9);
+            }
+            
             saveToLocalStorage();
             updateUI();
             showNotification('Демо-данные загружены', 'success');
@@ -1162,6 +1258,7 @@
                        <p>Будут удалены:</p>
                        <ul style="text-align: left; padding-left: 20px;">
                          <li>Все офферы</li>
+                         <li>Настройки API ключа</li>
                          <li>Все бэкапы</li>
                        </ul>
                        <p style="color: #dc2626; font-weight: bold;">Это действие нельзя отменить!</p>
@@ -1175,6 +1272,10 @@
                 if (result.isConfirmed) {
                     localStorage.clear();
                     offers = [];
+                    settings = { 
+                        api_key: 'loan_system_' + Math.random().toString(36).substr(2, 9)
+                    };
+                    document.getElementById('api-key').value = settings.api_key;
                     updateUI();
                     showNotification('Все данные сброшены', 'success');
                 }
@@ -1185,6 +1286,7 @@
         function showSection(section) {
             // Скрываем все секции
             document.getElementById('offers-section').style.display = 'none';
+            document.getElementById('api-section').style.display = 'none';
             document.getElementById('backup-section').style.display = 'none';
             
             // Показываем выбранную
